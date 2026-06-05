@@ -19,6 +19,8 @@ impressão 3D, cobrindo **clientes**, **estoque** e **produção**. Consulte o
 - **Supabase / PostgreSQL** para dados e autenticação
 - Deploy na **Vercel**
 - Mobile opcional com **React Native / Expo**
+- **Bun** como package manager e runtime (use `bun`, não `npm`/`yarn`/`pnpm`;
+  lockfile `bun.lock`)
 
 ## Princípios de trabalho
 
@@ -31,6 +33,27 @@ impressão 3D, cobrindo **clientes**, **estoque** e **produção**. Consulte o
 4. **Planeje antes de mudanças grandes** — para tarefas multi-etapas, esboce um
    plano antes de implementar.
 5. **Mudanças pequenas e revisáveis** — prefira PRs focados.
+
+## PRD & SPEC
+
+Trabalho não-trivial passa por dois documentos, em alturas diferentes:
+
+- **PRD** (produto) — *o quê* e *porquê*. Problem statement, solução pela ótica
+  do usuário, user stories, decisões de produto. **Sem** caminhos de arquivo nem
+  snippets. Estável; muda raramente. Vive em `docs/prd/`. Skill: `to-prd`.
+- **SPEC** (técnico, para agentes) — *como*. Arquivos a tocar, interfaces,
+  schema, e tarefas TDD bite-sized (2–5 min) prontas para um agente implementar.
+  Volátil; descartável após o merge. Vive em `docs/specs/`. Skill: `writing-plans`.
+
+Fluxo: `PRD → (fatiar em issues) → SPEC → executar`. Um PRD pode gerar vários
+SPECs (um por subsistema). Cada SPEC deve produzir software funcional e testável
+por si só.
+
+Nomeie arquivos como `YYYY-MM-DD-<feature>.md`. Use os templates em
+`docs/prd/TEMPLATE.md` e `docs/specs/TEMPLATE.md`.
+
+Regra rápida: alinhar **escopo/valor** com stakeholder → PRD; já sei o quê,
+quero **passo-a-passo de código** → SPEC.
 
 ## Convenções de código
 
@@ -66,6 +89,8 @@ O diretório `.agents/skills/` traz skills reutilizáveis (registradas em
   `vercel-composition-patterns`, `vercel-react-native-skills`,
   `vercel-react-view-transitions`, `vercel-optimize`, `web-design-guidelines`.
 - **Supabase** — `supabase`, `supabase-postgres-best-practices`.
+- **Matt Pocock** — `to-prd`, `to-issues` (fluxo PRD/SPEC), `caveman` (modo de
+  resposta comprimido).
 
 Consulte o `SKILL.md` correspondente antes de aplicar cada uma.
 

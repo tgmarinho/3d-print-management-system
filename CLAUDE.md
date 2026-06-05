@@ -11,7 +11,8 @@ traz apenas o que é específico do Claude Code. A visão geral do produto está
 **produção** para operações de impressão 3D.
 
 Stack-alvo: **Next.js (App Router) + TypeScript**, **Supabase/PostgreSQL**,
-deploy na **Vercel**, mobile opcional com **React Native/Expo**.
+deploy na **Vercel**, mobile opcional com **React Native/Expo**. Package manager
+e runtime: **Bun**.
 
 > Estágio inicial: ainda sem código de aplicação. Atualize este guia (comandos,
 > arquitetura) assim que o app for criado.
@@ -21,15 +22,16 @@ deploy na **Vercel**, mobile opcional com **React Native/Expo**.
 Quando a aplicação existir, os comandos esperados são:
 
 ```bash
-npm install     # instalar dependências
-npm run dev     # ambiente de desenvolvimento (http://localhost:3000)
-npm run build   # build de produção
-npm run lint    # lint
-npm test        # testes
+bun install     # instalar dependências
+bun run dev     # ambiente de desenvolvimento (http://localhost:3000)
+bun run build   # build de produção
+bun run lint    # lint
+bun test        # testes
 ```
 
-> Confirme os scripts reais no `package.json` antes de usá-los — ele ainda não
-> existe.
+> Use **Bun** como package manager e runtime — não use `npm`/`yarn`/`pnpm`. O
+> lockfile é o `bun.lock`. Confirme os scripts reais no `package.json` antes de
+> usá-los — ele ainda não existe.
 
 ## Fluxo de trabalho esperado
 

@@ -21,24 +21,27 @@ O objetivo é oferecer a um negócio de impressão 3D uma plataforma única para
 O stack-alvo, inferido pela configuração do repositório (`.gitignore`, skills de
 agentes e tooling), é:
 
-| Camada        | Tecnologia                                   |
-| ------------- | -------------------------------------------- |
-| Frontend/Web  | Next.js (App Router) + React + TypeScript    |
-| Backend/Dados | Supabase (PostgreSQL)                         |
-| Deploy        | Vercel                                        |
-| Mobile (opc.) | React Native / Expo                          |
+| Camada              | Tecnologia                                   |
+| ------------------- | -------------------------------------------- |
+| Frontend/Web        | Next.js (App Router) + React + TypeScript    |
+| Backend/Dados       | Supabase (PostgreSQL)                         |
+| Deploy              | Vercel                                        |
+| Mobile (opc.)       | React Native / Expo                          |
+| Runtime / pkg mgr   | Bun                                          |
 
 > Estas escolhas devem ser confirmadas/ajustadas conforme o código for sendo
 > escrito. Atualize esta seção quando a implementação real começar.
 
 ## Começando
 
+Pré-requisito: [Bun](https://bun.sh) instalado (`curl -fsSL https://bun.sh/install | bash`).
+
 ```bash
 # instalar dependências (quando o app existir)
-npm install
+bun install
 
 # rodar em desenvolvimento
-npm run dev
+bun run dev
 ```
 
 A aplicação ficará disponível em `http://localhost:3000`.
