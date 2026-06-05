@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/(auth)/login/actions";
 import { BottomNav } from "@/components/bottom-nav";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function AppLayout({
   children,
@@ -36,6 +37,7 @@ export default async function AppLayout({
       </header>
       <main className="mx-auto w-full max-w-3xl px-4 py-6">{children}</main>
       <BottomNav />
+      <Toaster position="top-center" />
     </div>
   );
 }

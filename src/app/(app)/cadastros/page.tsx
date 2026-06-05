@@ -3,6 +3,7 @@ import {
   Box,
   ChevronRight,
   MapPin,
+  Spool,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -31,6 +32,12 @@ const entries = [
     label: "Produtos",
     description: "Catálogo reutilizável entre clientes e pedidos.",
     icon: Box,
+  },
+  {
+    href: "/cadastros/filamentos",
+    label: "Filamentos",
+    description: "Cores e materiais, com estoque por local.",
+    icon: Spool,
   },
   {
     href: "/cadastros/locais",
