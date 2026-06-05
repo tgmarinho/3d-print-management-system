@@ -13,7 +13,9 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", label: "Início", icon: LayoutGrid },
-  { href: "/estoque", label: "Estoque", icon: Boxes },
+  // "Estoque" reaproveita a tela de filamentos (lista com total de rolos por
+  // filamento e alerta de estoque baixo) — não há rota /estoque separada.
+  { href: "/cadastros/filamentos", label: "Estoque", icon: Boxes },
   { href: "/pedidos", label: "Pedidos", icon: ClipboardList },
   { href: "/fila", label: "Fila", icon: ListOrdered },
   { href: "/cadastros", label: "Cadastros", icon: FolderCog },
@@ -21,11 +23,24 @@ const items = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  // Item ativo = o de prefixo mais específico (mais longo) que casa com a rota.
+  // Sem isso, /cadastros/filamentos acenderia "Estoque" e "Cadastros" ao mesmo
+  // tempo, já que ambos são prefixos do caminho.
+  const activeHref = items
+    .filter(
+      (item) =>
+        pathname === item.href || pathname.startsWith(`${item.href}/`),
+    )
+    .reduce<string | null>(
+      (best, item) =>
+        best && best.length >= item.href.length ? best : item.href,
+      null,
+    );
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/90 backdrop-blur-sm">
       <div className="mx-auto grid max-w-3xl grid-cols-5">
         {items.map((item) => {
-          const active = pathname.startsWith(item.href);
+          const active = item.href === activeHref;
           const Icon = item.icon;
           return (
             <Link
