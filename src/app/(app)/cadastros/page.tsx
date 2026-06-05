@@ -3,6 +3,7 @@ import {
   Box,
   ChevronRight,
   MapPin,
+  ShieldCheck,
   Spool,
   UserRound,
   UsersRound,
@@ -44,6 +45,12 @@ const entries = [
     label: "Locais de estoque",
     description: "Onde os filamentos ficam guardados.",
     icon: MapPin,
+  },
+  {
+    href: "/cadastros/usuarios",
+    label: "Usuários do sistema",
+    description: "Quem acessa o sistema (todos administradores).",
+    icon: ShieldCheck,
   },
 ];
 

@@ -15,6 +15,14 @@ export function parseEnv(raw: RawEnv = process.env) {
   return { supabaseUrl, supabaseAnonKey };
 }
 
+// Chave secreta (service_role / sb_secret_…): SOMENTE no servidor. Habilita as
+// operações de Admin do Supabase (gestão de usuários do sistema).
+export function requireServiceRoleKey(raw: RawEnv = process.env): string {
+  const key = raw.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) throw new Error("Falta SUPABASE_SERVICE_ROLE_KEY");
+  return key;
+}
+
 // Lazy: valida só quando uma propriedade é acessada (runtime), não no import.
 // Assim o build/testes não exigem as variáveis presentes só por importar o módulo.
 export const env = {
@@ -23,5 +31,8 @@ export const env = {
   },
   get supabaseAnonKey() {
     return parseEnv().supabaseAnonKey;
+  },
+  get supabaseServiceRoleKey() {
+    return requireServiceRoleKey();
   },
 };
