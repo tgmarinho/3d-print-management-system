@@ -57,6 +57,12 @@ antes de aplicar.
 ## Convenções específicas
 
 - **TypeScript estrito**; evite `any`.
+- **Formulários: React Hook Form + Zod** (`@hookform/resolvers`) onde fizer
+  sentido — todo form com validação/estado/submit não-trivial. O schema Zod é a
+  fonte de verdade (`z.infer` para o tipo); se o submit for Server Action,
+  **revalide com o mesmo schema no servidor**. Inputs triviais não precisam do
+  setup. Selects avançados → `react-select`; selects simples → `Select` do shadcn.
+  Exemplo canônico em [`docs/conventions/forms.md`](./docs/conventions/forms.md).
 - Espelhe o estilo do código vizinho (nomes, idioma, comentários).
 - **Segredos**: use `.env.local`; nunca faça commit de chaves. Service keys do
   Supabase só no servidor.

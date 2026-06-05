@@ -70,6 +70,15 @@ quero **passo-a-passo de código** → SPEC.
 - **Linguagem:** TypeScript em modo estrito; evite `any`.
 - **Componentes:** siga padrões de composição do React (children em vez de
   render props, evite props booleanas excessivas, sem `forwardRef` no React 19).
+- **Formulários:** use **React Hook Form + Zod** (via `@hookform/resolvers`) onde
+  fizer sentido — qualquer formulário com validação, estado ou submit não-trivial.
+  O schema Zod é a fonte de verdade da validação (use `z.infer` para o tipo) e,
+  quando o submit é uma Server Action, **revalide no servidor com o mesmo schema**
+  — nunca confie só na validação do client. Para campos `<input>` simples, sem
+  validação, não force o setup. Para selects avançados (busca/async/multi),
+  combine com `react-select`; para selects simples, o `Select` do shadcn basta.
+  Exemplo canônico (schema → action → form) em
+  [`docs/conventions/forms.md`](./docs/conventions/forms.md).
 - **Estilo:** mantenha a consistência com o código existente — espelhe nomes,
   densidade de comentários e idioma do arquivo ao redor.
 - **Banco:** siga boas práticas de Postgres/Supabase (RLS, índices, pooling de
