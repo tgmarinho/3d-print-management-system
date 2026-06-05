@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import type { Filament } from "@/lib/filaments";
+import {
+  summarizeFilamentStock,
+  sumInStockByFilament,
+  type Filament,
+} from "@/lib/filaments";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { RealtimeRefresh } from "@/components/realtime-refresh";
 
 export default async function FilamentsPage() {
   const supabase = await createClient();
@@ -17,17 +22,15 @@ export default async function FilamentsPage() {
 
   const filaments = (filamentsData ?? []) as Filament[];
 
-  // Total em estoque por filamento, para sinalizar estoque baixo na lista.
-  const inStockByFilament = new Map<string, number>();
-  for (const row of stockData ?? []) {
-    inStockByFilament.set(
-      row.filament_id,
-      (inStockByFilament.get(row.filament_id) ?? 0) + row.in_stock,
-    );
-  }
+  // Total em estoque por filamento + flag de estoque baixo (mesmo critério da
+  // página de detalhe e do dashboard).
+  const inStockByFilament = sumInStockByFilament(stockData ?? []);
+  const summaries = summarizeFilamentStock(filaments, inStockByFilament);
 
   return (
     <section className="space-y-4">
+      {/* Estoque e limites mudam ao vivo entre sessões. */}
+      <RealtimeRefresh tables={["filament_stock", "filaments"]} />
       <div className="flex items-center justify-between gap-2">
         <div>
           <h1 className="text-xl font-semibold">Filamentos</h1>
@@ -48,11 +51,8 @@ export default async function FilamentsPage() {
         </p>
       ) : (
         <ul className="space-y-2">
-          {filaments.map((filament) => {
-            const inStock = inStockByFilament.get(filament.id) ?? 0;
-            const low =
-              filament.low_stock_threshold > 0 &&
-              inStock <= filament.low_stock_threshold;
+          {summaries.map((filament) => {
+            const { inStock, low } = filament;
             return (
               <li key={filament.id}>
                 <Link

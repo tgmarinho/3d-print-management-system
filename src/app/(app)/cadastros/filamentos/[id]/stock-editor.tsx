@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { StockField } from "@/lib/filaments";
+import { isLowStock, type StockField } from "@/lib/filaments";
+import { useTableChanges } from "@/lib/supabase/realtime";
 import { adjustStock } from "../actions";
+
+// Linha de filament_stock como chega no payload do Realtime.
+type StockRow = {
+  filament_id: string;
+  location_id: string;
+  in_stock: number;
+  on_order: number;
+};
 
 type Location = { id: string; name: string };
 type Counts = { in_stock: number; on_order: number };
@@ -27,6 +36,33 @@ export function StockEditor({
   const [stock, setStock] = useState<Record<string, Counts>>(initial);
   const [pending, startTransition] = useTransition();
 
+  // Locais com ajuste local em andamento (contador por local). Enquanto >0,
+  // ignoramos o Realtime daquele local: o estado otimista é mais recente que o
+  // eco do nosso próprio upsert e aplicá-lo causaria flicker no +/- rápido.
+  const inFlight = useRef<Map<string, number>>(new Map());
+
+  function markInFlight(locationId: string, delta: 1 | -1) {
+    const map = inFlight.current;
+    const next = (map.get(locationId) ?? 0) + delta;
+    if (next > 0) map.set(locationId, next);
+    else map.delete(locationId);
+  }
+
+  // Realtime: ajuste feito em outra sessão reflete aqui na hora, sem reload.
+  useTableChanges<StockRow>(
+    "filament_stock",
+    (payload) => {
+      const row = payload.new;
+      if (!row || !("location_id" in row) || row.filament_id !== filamentId) return;
+      if (inFlight.current.has(row.location_id)) return; // nosso próprio ajuste
+      setStock((prev) => ({
+        ...prev,
+        [row.location_id]: { in_stock: row.in_stock, on_order: row.on_order },
+      }));
+    },
+    { filter: `filament_id=eq.${filamentId}` },
+  );
+
   function adjust(locationId: string, field: StockField, delta: number) {
     const current = stock[locationId]?.[field] ?? 0;
     const next = Math.max(0, current + delta);
@@ -38,6 +74,7 @@ export function StockEditor({
       [locationId]: { ...(prev[locationId] ?? ZERO), [field]: next },
     }));
 
+    markInFlight(locationId, 1);
     startTransition(async () => {
       const result = await adjustStock(filamentId, locationId, field, delta);
       if (!result.ok) {
@@ -47,6 +84,7 @@ export function StockEditor({
           [locationId]: { ...(prev[locationId] ?? ZERO), [field]: current },
         }));
       }
+      markInFlight(locationId, -1);
     });
   }
 
@@ -54,7 +92,7 @@ export function StockEditor({
     (sum, loc) => sum + (stock[loc.id]?.in_stock ?? 0),
     0,
   );
-  const low = lowStockThreshold > 0 && totalInStock <= lowStockThreshold;
+  const low = isLowStock(totalInStock, lowStockThreshold);
 
   if (locations.length === 0) {
     return (

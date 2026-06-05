@@ -50,3 +50,40 @@ export function applyStockDelta(current: number, delta: number): number {
 export function filamentLabel(filament: Pick<Filament, "color" | "material">): string {
   return `${filament.color} · ${filament.material}`;
 }
+
+// Estoque baixo: só sinaliza quando há limite configurado (>0) e o total em
+// estoque está nele ou abaixo. Fonte única de verdade para lista, editor e
+// dashboard — mantém o critério consistente em toda a UI.
+export function isLowStock(inStock: number, threshold: number): boolean {
+  return threshold > 0 && inStock <= threshold;
+}
+
+// Soma o `in_stock` de cada filamento a partir das linhas de filament_stock
+// (um filamento tem uma linha por local). Chave: filament_id → total em estoque.
+export function sumInStockByFilament(
+  rows: Pick<FilamentStock, "filament_id" | "in_stock">[],
+): Map<string, number> {
+  const total = new Map<string, number>();
+  for (const row of rows) {
+    total.set(row.filament_id, (total.get(row.filament_id) ?? 0) + row.in_stock);
+  }
+  return total;
+}
+
+// Filamento com o total em estoque e a flag de estoque baixo já resolvidos.
+export type FilamentStockSummary = Filament & { inStock: number; low: boolean };
+
+// Junta filamentos com o total em estoque por filamento e marca os baixos.
+export function summarizeFilamentStock(
+  filaments: Filament[],
+  inStockById: Map<string, number>,
+): FilamentStockSummary[] {
+  return filaments.map((filament) => {
+    const inStock = inStockById.get(filament.id) ?? 0;
+    return {
+      ...filament,
+      inStock,
+      low: isLowStock(inStock, filament.low_stock_threshold),
+    };
+  });
+}
