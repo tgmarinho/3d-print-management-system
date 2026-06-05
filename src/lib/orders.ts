@@ -114,6 +114,20 @@ export function filterOrders(
   });
 }
 
+// Fila atual: pedidos ainda em espera, na ordem da fila (queue_position
+// crescente). Não muta a lista recebida — copia antes de ordenar.
+export function queuedOrders(orders: OrderListItem[]): OrderListItem[] {
+  return orders
+    .filter((o) => o.production_status === "waiting")
+    .slice()
+    .sort((a, b) => a.queue_position - b.queue_position);
+}
+
+// Produção em andamento: pedidos atualmente sendo impressos.
+export function producingOrders(orders: OrderListItem[]): OrderListItem[] {
+  return orders.filter((o) => o.production_status === "producing");
+}
+
 // Resumo de pendências (a receber): quantidade e soma dos pedidos não pagos.
 export function summarizePending(orders: OrderListItem[]): {
   count: number;

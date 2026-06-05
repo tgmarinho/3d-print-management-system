@@ -3,8 +3,10 @@ import {
   filterOrders,
   formatBRL,
   nextQueuePosition,
+  producingOrders,
   productionStatusLabel,
   productLabel,
+  queuedOrders,
   summarizePending,
   summarizeProduction,
   type OrderListItem,
@@ -155,4 +157,34 @@ test("summarizePending soma apenas os não pagos", () => {
     makeOrder({ id: "c", payment_status: "paid", amount: 999 }),
   ];
   expect(summarizePending(orders)).toEqual({ count: 2, total: 150 });
+});
+
+test("queuedOrders pega só os em espera, ordenados pela posição na fila", () => {
+  const orders = [
+    makeOrder({ id: "a", production_status: "waiting", queue_position: 3 }),
+    makeOrder({ id: "b", production_status: "producing", queue_position: 1 }),
+    makeOrder({ id: "c", production_status: "waiting", queue_position: 1 }),
+    makeOrder({ id: "d", production_status: "done", queue_position: 2 }),
+    makeOrder({ id: "e", production_status: "waiting", queue_position: 2 }),
+  ];
+  expect(queuedOrders(orders).map((o) => o.id)).toEqual(["c", "e", "a"]);
+});
+
+test("queuedOrders não muta o array recebido", () => {
+  const orders = [
+    makeOrder({ id: "a", production_status: "waiting", queue_position: 2 }),
+    makeOrder({ id: "b", production_status: "waiting", queue_position: 1 }),
+  ];
+  queuedOrders(orders);
+  expect(orders.map((o) => o.id)).toEqual(["a", "b"]);
+});
+
+test("producingOrders pega só os em produção", () => {
+  const orders = [
+    makeOrder({ id: "a", production_status: "producing" }),
+    makeOrder({ id: "b", production_status: "waiting" }),
+    makeOrder({ id: "c", production_status: "producing" }),
+    makeOrder({ id: "d", production_status: "done" }),
+  ];
+  expect(producingOrders(orders).map((o) => o.id)).toEqual(["a", "c"]);
 });
