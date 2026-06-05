@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, PackageCheck } from "lucide-react";
+import { AlertTriangle, ChevronRight, History, PackageCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import {
   summarizeFilamentStock,
@@ -82,6 +82,22 @@ export default async function DashboardPage() {
           </ul>
         )}
       </div>
+
+      <Link
+        href="/auditoria"
+        className="group flex items-center gap-3 rounded-xl bg-card px-3 py-3 text-card-foreground ring-1 ring-foreground/10 transition-colors hover:bg-muted/50"
+      >
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-muted-foreground">
+          <History className="size-4" strokeWidth={1.75} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">Histórico de ações</p>
+          <p className="truncate text-sm text-muted-foreground">
+            Quem fez o quê, em qual cadastro e quando.
+          </p>
+        </div>
+        <ChevronRight className="size-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
+      </Link>
 
       <p className="text-sm text-muted-foreground">
         Em breve: fila, produção e pagamentos pendentes.
