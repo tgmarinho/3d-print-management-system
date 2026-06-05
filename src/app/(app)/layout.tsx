@@ -4,7 +4,11 @@ import { signOut } from "@/app/(auth)/login/actions";
 import { BottomNav } from "@/components/bottom-nav";
 import { Button } from "@/components/ui/button";
 
-export default async function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -12,16 +16,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-dvh pb-16">
-      <header className="flex items-center justify-between border-b p-4">
-        <span className="font-semibold">3D Print</span>
-        <form action={signOut}>
-          <Button variant="ghost" size="sm">
-            Sair
-          </Button>
-        </form>
+    <div className="min-h-dvh pb-20">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur-sm">
+        <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
+          <span className="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight">
+            <span className="inline-block size-2.5 rounded-[3px] bg-brand" />
+            3D<span className="text-muted-foreground">·</span>PRINT
+          </span>
+          <form action={signOut}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
+            >
+              Sair
+            </Button>
+          </form>
+        </div>
       </header>
-      <main className="p-4">{children}</main>
+      <main className="mx-auto w-full max-w-3xl px-4 py-6">{children}</main>
       <BottomNav />
     </div>
   );

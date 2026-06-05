@@ -37,3 +37,7 @@ next-env.d.ts
 
 # brainstorming visual companion
 .superpowers/
+
+# python bytecode (skills/scripts)
+__pycache__/
+*.py[cod]

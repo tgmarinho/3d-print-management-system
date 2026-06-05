@@ -7,9 +7,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,73 +50,80 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Workshop Instrument — tinta sobre papel + acento laranja de filamento.
+   Base monocromática quente; o laranja (--brand) é o único acento de cor,
+   reservado para foco, estado ativo e marcadores. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.991 0.003 85); /* papel quente */
+  --foreground: oklch(0.2 0.012 60); /* tinta */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.2 0.012 60);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.2 0.012 60);
+  --primary: oklch(0.24 0.012 55); /* CTA: tinta profunda */
+  --primary-foreground: oklch(0.985 0.004 85);
+  --secondary: oklch(0.965 0.005 80);
+  --secondary-foreground: oklch(0.24 0.012 55);
+  --muted: oklch(0.965 0.005 80);
+  --muted-foreground: oklch(0.505 0.01 60);
+  --accent: oklch(0.95 0.013 60); /* hover sutil quente */
+  --accent-foreground: oklch(0.24 0.012 55);
+  --destructive: oklch(0.58 0.22 27.3);
+  --border: oklch(0.9 0.006 75);
+  --input: oklch(0.9 0.006 75);
+  --ring: oklch(0.67 0.19 47); /* foco = laranja */
+  --brand: oklch(0.67 0.19 47);
+  --brand-foreground: oklch(0.99 0.01 85);
+  --chart-1: oklch(0.67 0.19 47); /* laranja */
+  --chart-2: oklch(0.55 0.13 250); /* aço */
+  --chart-3: oklch(0.68 0.14 162); /* verde */
+  --chart-4: oklch(0.78 0.15 85); /* âmbar */
+  --chart-5: oklch(0.55 0.02 60); /* grafite */
+  --radius: 0.4rem;
+  --sidebar: oklch(0.985 0.004 85);
+  --sidebar-foreground: oklch(0.2 0.012 60);
+  --sidebar-primary: oklch(0.24 0.012 55);
+  --sidebar-primary-foreground: oklch(0.985 0.004 85);
+  --sidebar-accent: oklch(0.95 0.013 60);
+  --sidebar-accent-foreground: oklch(0.24 0.012 55);
+  --sidebar-border: oklch(0.9 0.006 75);
+  --sidebar-ring: oklch(0.67 0.19 47);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --background: oklch(0.17 0.008 60); /* grafite */
+  --foreground: oklch(0.95 0.005 85);
+  --card: oklch(0.21 0.008 60);
+  --card-foreground: oklch(0.95 0.005 85);
+  --popover: oklch(0.21 0.008 60);
+  --popover-foreground: oklch(0.95 0.005 85);
+  --primary: oklch(0.92 0.01 85);
+  --primary-foreground: oklch(0.21 0.01 60);
+  --secondary: oklch(0.27 0.008 60);
+  --secondary-foreground: oklch(0.95 0.005 85);
+  --muted: oklch(0.27 0.008 60);
+  --muted-foreground: oklch(0.71 0.008 75);
+  --accent: oklch(0.3 0.012 60);
+  --accent-foreground: oklch(0.95 0.005 85);
+  --destructive: oklch(0.7 0.19 22.2);
+  --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --ring: oklch(0.7 0.18 47);
+  --brand: oklch(0.7 0.18 47);
+  --brand-foreground: oklch(0.18 0.01 60);
+  --chart-1: oklch(0.7 0.18 47);
+  --chart-2: oklch(0.62 0.13 250);
+  --chart-3: oklch(0.7 0.14 162);
+  --chart-4: oklch(0.8 0.15 85);
+  --chart-5: oklch(0.7 0.02 75);
+  --sidebar: oklch(0.21 0.008 60);
+  --sidebar-foreground: oklch(0.95 0.005 85);
+  --sidebar-primary: oklch(0.7 0.18 47);
+  --sidebar-primary-foreground: oklch(0.18 0.01 60);
+  --sidebar-accent: oklch(0.3 0.012 60);
+  --sidebar-accent-foreground: oklch(0.95 0.005 85);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.7 0.18 47);
 }
 
 @layer base {
@@ -126,5 +135,33 @@
   }
   html {
     @apply font-sans;
+  }
+  ::selection {
+    background-color: var(--brand);
+    color: var(--brand-foreground);
+  }
+  /* dados e identificadores em Fira Code com algarismos tabulares */
+  .font-mono,
+  .tabular-nums {
+    font-feature-settings: "tnum" 1, "ss01" 1;
+  }
+}
+
+@layer utilities {
+  /* grade técnica fina para fundos — atmosfera de prancheta/instrumento */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse at top, black, transparent 75%);
+  }
+  /* etiqueta de eyebrow em maiúsculas espaçadas — estilo blueprint */
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.6875rem;
+    line-height: 1;
   }
 }

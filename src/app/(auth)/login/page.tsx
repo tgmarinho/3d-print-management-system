@@ -29,10 +29,15 @@ export default async function LoginPage({
             <Input id="password" name="password" type="password" required minLength={6} />
           </div>
           <div className="flex gap-2">
-            <Button formAction={signIn} className="flex-1">
+            <Button type="submit" formAction={signIn} className="flex-1">
               Entrar
             </Button>
-            <Button formAction={signUp} variant="outline" className="flex-1">
+            <Button
+              type="submit"
+              formAction={signUp}
+              variant="outline"
+              className="flex-1"
+            >
               Cadastrar
             </Button>
           </div>

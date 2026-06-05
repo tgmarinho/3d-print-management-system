@@ -2,9 +2,16 @@ type RawEnv = Record<string, string | undefined>;
 
 export function parseEnv(raw: RawEnv = process.env) {
   const supabaseUrl = raw.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = raw.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Supabase renomeou a chave pública de `anon` para `publishable` (sb_publishable_…);
+  // preferimos a nova e mantemos fallback para a antiga.
+  const supabaseAnonKey =
+    raw.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? raw.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supabaseUrl) throw new Error("Falta NEXT_PUBLIC_SUPABASE_URL");
-  if (!supabaseAnonKey) throw new Error("Falta NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  if (!supabaseAnonKey) {
+    throw new Error(
+      "Falta NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (ou NEXT_PUBLIC_SUPABASE_ANON_KEY)",
+    );
+  }
   return { supabaseUrl, supabaseAnonKey };
 }
 
