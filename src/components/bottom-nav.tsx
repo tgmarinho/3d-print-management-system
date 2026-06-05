@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ClipboardList, FolderCog, LayoutGrid } from "lucide-react";
+import {
+  Boxes,
+  ClipboardList,
+  FolderCog,
+  LayoutGrid,
+  ListOrdered,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", label: "Início", icon: LayoutGrid },
   { href: "/estoque", label: "Estoque", icon: Boxes },
   { href: "/pedidos", label: "Pedidos", icon: ClipboardList },
+  { href: "/fila", label: "Fila", icon: ListOrdered },
   { href: "/cadastros", label: "Cadastros", icon: FolderCog },
 ];
 
@@ -16,7 +23,7 @@ export function BottomNav() {
   const pathname = usePathname();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/90 backdrop-blur-sm">
-      <div className="mx-auto grid max-w-3xl grid-cols-4">
+      <div className="mx-auto grid max-w-3xl grid-cols-5">
         {items.map((item) => {
           const active = pathname.startsWith(item.href);
           const Icon = item.icon;
