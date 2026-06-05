@@ -8,10 +8,14 @@ import { toast } from "sonner";
 import {
   filterOrders,
   formatBRL,
+  productionStatusLabel,
+  PRODUCTION_STATUSES,
   productLabel,
   summarizePending,
   type OrderListItem,
   type PaymentFilter,
+  type ProductionFilter,
+  type ProductionStatus,
 } from "@/lib/orders";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -25,16 +29,33 @@ const FILTERS: { value: PaymentFilter; label: string }[] = [
   { value: "paid", label: "Pagos" },
 ];
 
+const PRODUCTION_FILTERS: { value: ProductionFilter; label: string }[] = [
+  { value: "all", label: "Todos" },
+  ...PRODUCTION_STATUSES.map((s) => ({ value: s.value, label: s.label })),
+];
+
+// Variante do badge por status de produção: "produzindo" destaca-se (primary),
+// "concluído" fica discreto (secondary) e "em espera" neutro (outline).
+const PRODUCTION_BADGE: Record<
+  ProductionStatus,
+  "default" | "secondary" | "outline"
+> = {
+  waiting: "outline",
+  producing: "default",
+  done: "secondary",
+};
+
 export function OrdersList({ orders }: { orders: OrderListItem[] }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [payment, setPayment] = useState<PaymentFilter>("all");
+  const [production, setProduction] = useState<ProductionFilter>("all");
   const [pending, startTransition] = useTransition();
 
   const pendingSummary = useMemo(() => summarizePending(orders), [orders]);
   const visible = useMemo(
-    () => filterOrders(orders, { query, payment }),
-    [orders, query, payment],
+    () => filterOrders(orders, { query, payment, production }),
+    [orders, query, payment, production],
   );
 
   function togglePayment(order: OrderListItem) {
@@ -78,23 +99,44 @@ export function OrdersList({ orders }: { orders: OrderListItem[] }) {
         />
       </div>
 
-      <div className="flex gap-2">
-        {FILTERS.map((f) => (
-          <button
-            key={f.value}
-            type="button"
-            onClick={() => setPayment(f.value)}
-            aria-pressed={payment === f.value}
-            className={cn(
-              "rounded-full px-3 py-1 text-sm transition-colors",
-              payment === f.value
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {f.label}
-          </button>
-        ))}
+      <div className="space-y-2">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setPayment(f.value)}
+              aria-pressed={payment === f.value}
+              className={cn(
+                "rounded-full px-3 py-1 text-sm transition-colors",
+                payment === f.value
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        {/* Filtro de produção: tocar "Produzindo" lista os pedidos em produção. */}
+        <div className="flex flex-wrap gap-2">
+          {PRODUCTION_FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setProduction(f.value)}
+              aria-pressed={production === f.value}
+              className={cn(
+                "rounded-full px-3 py-1 text-sm transition-colors",
+                production === f.value
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {visible.length === 0 ? (
@@ -124,6 +166,12 @@ export function OrdersList({ orders }: { orders: OrderListItem[] }) {
                       <div className="truncate text-sm text-muted-foreground">
                         {order.quantity}× {productLabel(order)}
                       </div>
+                      <Badge
+                        variant={PRODUCTION_BADGE[order.production_status]}
+                        className="mt-1.5"
+                      >
+                        {productionStatusLabel(order.production_status)}
+                      </Badge>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
                       <span className="font-semibold tabular-nums">

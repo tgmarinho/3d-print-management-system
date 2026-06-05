@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { logAudit } from "@/lib/audit";
-import { nextQueuePosition, type PaymentStatus } from "@/lib/orders";
+import {
+  nextQueuePosition,
+  type PaymentStatus,
+  type ProductionStatus,
+} from "@/lib/orders";
 import { orderSchema, type OrderInput } from "./schema";
 
 const LIST = "/pedidos";
@@ -122,6 +126,38 @@ export async function setPaymentStatus(
     entityType: "order",
     entityId: id,
     details: { to: status },
+  });
+
+  revalidatePath(LIST);
+  revalidatePath(`${LIST}/${id}`);
+  return { ok: true, id };
+}
+
+// Avança/altera o status de produção (em espera → produzindo → concluído) num
+// toque. Lê o status atual para registrar a transição no audit como "status".
+export async function setProductionStatus(
+  id: string,
+  status: ProductionStatus,
+): Promise<OrderActionResult> {
+  const supabase = await createClient();
+
+  const { data: current } = await supabase
+    .from("orders")
+    .select("production_status")
+    .eq("id", id)
+    .maybeSingle();
+
+  const { error } = await supabase
+    .from("orders")
+    .update({ production_status: status, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) return { ok: false, message: error.message };
+
+  await logAudit({
+    action: "status",
+    entityType: "order",
+    entityId: id,
+    details: { from: current?.production_status ?? null, to: status },
   });
 
   revalidatePath(LIST);

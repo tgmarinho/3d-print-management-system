@@ -64,19 +64,40 @@ export function nextQueuePosition(currentMax: number | null | undefined): number
 }
 
 export type PaymentFilter = "all" | "unpaid" | "paid";
+export type ProductionFilter = "all" | ProductionStatus;
 
-// Filtra por situação de pagamento e por texto livre (nome do cliente ou
-// produto/descrição). Pura para ser testável e rodar no client sobre a lista
-// já carregada — mantém a busca instantânea no mobile.
+// Status de produção em ordem de avanço (em espera → produzindo → concluído),
+// com rótulo em pt-BR. Fonte única para selects, badges e filtros.
+export const PRODUCTION_STATUSES: { value: ProductionStatus; label: string }[] =
+  [
+    { value: "waiting", label: "Em espera" },
+    { value: "producing", label: "Produzindo" },
+    { value: "done", label: "Concluído" },
+  ];
+
+export function productionStatusLabel(status: ProductionStatus): string {
+  return PRODUCTION_STATUSES.find((s) => s.value === status)?.label ?? status;
+}
+
+// Filtra por situação de pagamento, status de produção e por texto livre (nome
+// do cliente ou produto/descrição). Pura para ser testável e rodar no client
+// sobre a lista já carregada — mantém a busca instantânea no mobile.
 export function filterOrders(
   orders: OrderListItem[],
-  options: { query?: string; payment?: PaymentFilter },
+  options: {
+    query?: string;
+    payment?: PaymentFilter;
+    production?: ProductionFilter;
+  },
 ): OrderListItem[] {
   const query = (options.query ?? "").trim().toLowerCase();
   const payment = options.payment ?? "all";
+  const production = options.production ?? "all";
 
   return orders.filter((order) => {
     if (payment !== "all" && order.payment_status !== payment) return false;
+    if (production !== "all" && order.production_status !== production)
+      return false;
     if (query === "") return true;
 
     const haystack = [
@@ -103,4 +124,18 @@ export function summarizePending(orders: OrderListItem[]): {
     count: pending.length,
     total: pending.reduce((sum, o) => sum + Number(o.amount), 0),
   };
+}
+
+// Quantidade de pedidos em cada status de produção. Alimenta os contadores dos
+// filtros e a visão de "produção agora".
+export function summarizeProduction(
+  orders: OrderListItem[],
+): Record<ProductionStatus, number> {
+  const counts: Record<ProductionStatus, number> = {
+    waiting: 0,
+    producing: 0,
+    done: 0,
+  };
+  for (const order of orders) counts[order.production_status]++;
+  return counts;
 }

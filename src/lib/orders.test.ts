@@ -3,8 +3,10 @@ import {
   filterOrders,
   formatBRL,
   nextQueuePosition,
+  productionStatusLabel,
   productLabel,
   summarizePending,
+  summarizeProduction,
   type OrderListItem,
 } from "./orders";
 
@@ -82,6 +84,68 @@ test("filterOrders busca por cliente e por produto/descrição", () => {
     "b",
   ]);
   expect(filterOrders(orders, { query: "  " })).toHaveLength(2);
+});
+
+test("filterOrders filtra por status de produção", () => {
+  const orders = [
+    makeOrder({ id: "a", production_status: "waiting" }),
+    makeOrder({ id: "b", production_status: "producing" }),
+    makeOrder({ id: "c", production_status: "done" }),
+  ];
+  expect(
+    filterOrders(orders, { production: "producing" }).map((o) => o.id),
+  ).toEqual(["b"]);
+  expect(filterOrders(orders, { production: "all" })).toHaveLength(3);
+});
+
+test("filterOrders combina pagamento, produção e busca", () => {
+  const orders = [
+    makeOrder({
+      id: "a",
+      client: { name: "Karen" },
+      payment_status: "unpaid",
+      production_status: "producing",
+    }),
+    makeOrder({
+      id: "b",
+      client: { name: "Karen" },
+      payment_status: "paid",
+      production_status: "producing",
+    }),
+    makeOrder({
+      id: "c",
+      client: { name: "Cassio" },
+      payment_status: "unpaid",
+      production_status: "producing",
+    }),
+  ];
+  expect(
+    filterOrders(orders, {
+      query: "karen",
+      payment: "unpaid",
+      production: "producing",
+    }).map((o) => o.id),
+  ).toEqual(["a"]);
+});
+
+test("productionStatusLabel traduz cada status", () => {
+  expect(productionStatusLabel("waiting")).toBe("Em espera");
+  expect(productionStatusLabel("producing")).toBe("Produzindo");
+  expect(productionStatusLabel("done")).toBe("Concluído");
+});
+
+test("summarizeProduction conta pedidos por status", () => {
+  const orders = [
+    makeOrder({ id: "a", production_status: "waiting" }),
+    makeOrder({ id: "b", production_status: "producing" }),
+    makeOrder({ id: "c", production_status: "producing" }),
+    makeOrder({ id: "d", production_status: "done" }),
+  ];
+  expect(summarizeProduction(orders)).toEqual({
+    waiting: 1,
+    producing: 2,
+    done: 1,
+  });
 });
 
 test("summarizePending soma apenas os não pagos", () => {
