@@ -109,6 +109,12 @@
       "skillPath": "skills/engineering/to-prd/SKILL.md",
       "computedHash": "5212dee3af6a95e60d7daaedac08f15f2789b170468d57d23f722e516a255269"
     },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "9bd26c52dfd10dfd613dd3cc85df217dc25a172e380bde41fdfa6fedda288b2a"
+    },
     "using-git-worktrees": {
       "source": "obra/superpowers",
       "sourceType": "github",

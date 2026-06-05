@@ -6,9 +6,16 @@ também [`CLAUDE.md`](./CLAUDE.md).
 
 ## Sobre o projeto
 
-**3D Print SaaS Management System** — plataforma de gestão para operações de
-impressão 3D, cobrindo **clientes**, **estoque** e **produção**. Consulte o
-[`README.md`](./README.md) para a visão geral e o stack-alvo.
+**3D Print SaaS Management System** — gestão para uma operação de modelagem e
+impressão 3D sob demanda, cobrindo **clientes**, **estoque de filamento** e
+**produção** (orçamentos, fila de demanda, status). Consulte o
+[`README.md`](./README.md) para a visão geral e o
+[PRD](./docs/prd/001-gestao-impressao-3d.md) para o escopo completo.
+
+> **Produto fechado (single-tenant)** para uma empresa — não é um SaaS
+> multi-tenant (apesar do nome). É um **sistema de registro interno**: só as ~3
+> pessoas do negócio acessam, todas como administradores (sem RBAC); o cliente
+> final não acessa. Cliente, vendedor e modelador são **dados**, não usuários.
 
 > O repositório está em estágio inicial: ainda não há código de aplicação. Ao
 > introduzir o app, atualize este arquivo e o README com os comandos reais.
@@ -16,9 +23,10 @@ impressão 3D, cobrindo **clientes**, **estoque** e **produção**. Consulte o
 ## Stack-alvo
 
 - **Next.js (App Router)** + React + **TypeScript**
-- **Supabase / PostgreSQL** para dados e autenticação
+- **Supabase / PostgreSQL** para dados, autenticação e tempo real (Realtime)
 - Deploy na **Vercel**
-- Mobile opcional com **React Native / Expo**
+- **Web mobile-first** — app nativo (React Native/Expo) está **fora de escopo**;
+  a web mobile-first atende
 - **Bun** como package manager e runtime (use `bun`, não `npm`/`yarn`/`pnpm`;
   lockfile `bun.lock`)
 
@@ -49,8 +57,10 @@ Fluxo: `PRD → (fatiar em issues) → SPEC → executar`. Um PRD pode gerar vá
 SPECs (um por subsistema). Cada SPEC deve produzir software funcional e testável
 por si só.
 
-Nomeie arquivos como `YYYY-MM-DD-<feature>.md`. Use os templates em
-`docs/prd/TEMPLATE.md` e `docs/specs/TEMPLATE.md`.
+Nomeie os PRDs com numeração sequencial — `NNN-<feature>.md` (o primeiro é
+[`docs/prd/001-gestao-impressao-3d.md`](./docs/prd/001-gestao-impressao-3d.md)).
+Use os templates em `docs/prd/TEMPLATE.md` e `docs/specs/TEMPLATE.md`. Uma versão
+HTML do PRD (para apresentar ao cliente) pode acompanhar o `.md`.
 
 Regra rápida: alinhar **escopo/valor** com stakeholder → PRD; já sei o quê,
 quero **passo-a-passo de código** → SPEC.
@@ -91,6 +101,9 @@ O diretório `.agents/skills/` traz skills reutilizáveis (registradas em
 - **Supabase** — `supabase`, `supabase-postgres-best-practices`.
 - **Matt Pocock** — `to-prd`, `to-issues` (fluxo PRD/SPEC), `caveman` (modo de
   resposta comprimido).
+- **UI/UX** — `ui-ux-pro-max` (inteligência de design para web/mobile: estilos,
+  paletas, tipografia, regras de UX e charts). Os scripts de busca por domínio
+  (`scripts/search.py --design-system`) exigem **Python 3**.
 
 Consulte o `SKILL.md` correspondente antes de aplicar cada uma.
 

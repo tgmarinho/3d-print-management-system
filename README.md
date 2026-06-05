@@ -1,36 +1,46 @@
 # 3D Print SaaS Management System
 
-Sistema SaaS de gestão para operações de impressão 3D — gerenciamento de
-**clientes**, **estoque** (filamentos, resinas e insumos) e **produção**
-(pedidos, filas de impressão e acompanhamento de status).
+Sistema de gestão para uma operação de **modelagem e impressão 3D sob demanda** —
+controle de **clientes**, **estoque de filamento** e **produção** (orçamentos,
+fila de demanda e status).
 
-> **Status:** projeto em estágio inicial. Esta é a base do repositório, com a
-> documentação e a infraestrutura de agentes configuradas. O código da aplicação
-> ainda será adicionado.
+> Apesar do "SaaS" no nome, o escopo é um **produto fechado (single-tenant)**:
+> um app interno para **uma** empresa. É um **sistema de registro** operado só
+> pelas pessoas do negócio — o cliente final **não acessa**. Não há multi-tenant,
+> planos nem cobrança.
+
+> **Status:** documentação de produto pronta (veja o
+> [PRD](./docs/prd/001-gestao-impressao-3d.md)); o código da aplicação ainda será
+> adicionado. A base do repositório e a infraestrutura de agentes já estão
+> configuradas.
 
 ## Visão geral
 
-O objetivo é oferecer a um negócio de impressão 3D uma plataforma única para:
+O objetivo é dar ao negócio uma ferramenta única, **no celular e em tempo real**,
+que substitua a planilha:
 
-- **Clientes** — cadastro, histórico de pedidos e relacionamento.
-- **Estoque** — controle de filamentos/resinas, insumos e níveis mínimos.
-- **Produção** — pedidos, fila de impressão, status de cada job e custos.
+- **Clientes** — cadastro simples (só o nome é obrigatório) para vincular pedidos.
+- **Estoque** — filamentos por local, com quantidade **em estoque** e
+  **encomendada/a chegar**, atualização de um toque e alerta de estoque baixo.
+- **Produção** — orçamentos/pedidos com valor e pagamento, **fila de demanda
+  priorizável** e status (em espera / produzindo / concluído).
+- **Dashboard** — visão de relance: estoque baixo, fila, produção e pendências.
+
+O detalhamento completo está no [PRD](./docs/prd/001-gestao-impressao-3d.md).
 
 ## Stack
 
-O stack-alvo, inferido pela configuração do repositório (`.gitignore`, skills de
-agentes e tooling), é:
+O stack-alvo (definido no PRD/proposta e refletido na configuração do repositório)
+é:
 
 | Camada              | Tecnologia                                   |
 | ------------------- | -------------------------------------------- |
 | Frontend/Web        | Next.js (App Router) + React + TypeScript    |
 | Backend/Dados       | Supabase (PostgreSQL)                         |
 | Deploy              | Vercel                                        |
-| Mobile (opc.)       | React Native / Expo                          |
 | Runtime / pkg mgr   | Bun                                          |
 
-> Estas escolhas devem ser confirmadas/ajustadas conforme o código for sendo
-> escrito. Atualize esta seção quando a implementação real começar.
+> Atualize esta seção (versões e comandos reais) quando a implementação começar.
 
 ## Começando
 
@@ -57,6 +67,10 @@ por exemplo as chaves do Supabase. Nunca faça commit de segredos.
 .
 ├── .agents/         # Skills disponíveis para agentes de IA (Superpowers, Vercel, Supabase…)
 ├── .context/        # Arquivos de colaboração entre agentes (gitignored)
+├── docs/            # Documentação de produto
+│   ├── prd/         # PRDs (produto: o quê e porquê) + versões HTML para apresentar
+│   ├── specs/       # SPECs técnicos (como implementar)
+│   └── proposta-comercial.md
 ├── skills-lock.json # Lockfile das skills instaladas
 ├── AGENTS.md        # Convenções para agentes de IA trabalhando neste repo
 ├── CLAUDE.md        # Guia específico do Claude Code
