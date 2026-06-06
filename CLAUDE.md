@@ -13,28 +13,41 @@ filamento** e **produção** para uma operação de impressão 3D sob demanda. �
 do negócio acessam, todas como administradores; o cliente final não acessa.
 Escopo completo no [PRD](./docs/prd/001-gestao-impressao-3d.md).
 
-Stack-alvo: **Next.js (App Router) + TypeScript**, **Supabase/PostgreSQL**
-(com Realtime), deploy na **Vercel**, **web mobile-first** (sem app nativo).
+Stack: **Next.js 16 (App Router) + React 19 + TypeScript**, **Supabase/PostgreSQL**
+(Auth + RLS + Realtime), **Tailwind v4** + componentes shadcn (sobre `@base-ui/react`)
+e ícones `lucide-react`, deploy na **Vercel**, **web mobile-first** (sem app nativo).
 Package manager e runtime: **Bun**.
 
-> Estágio inicial: ainda sem código de aplicação. Atualize este guia (comandos,
-> arquitetura) assim que o app for criado.
+## Arquitetura
+
+- **Rotas** em `src/app`:
+  - `page.tsx` — landing pública (`/`) com a visão do produto e botão de login.
+  - `(auth)/login` — sign in / sign up via Supabase Auth (Server Actions).
+  - `(app)/*` — área autenticada (o `layout.tsx` redireciona para `/login` sem
+    usuário): `dashboard`, `pedidos`, `fila` (drag-and-drop com `@dnd-kit`),
+    `cadastros` (clientes, produtos, filamentos, locais, usuários) e `auditoria`.
+- **Domínio** em `src/lib/*.ts` (ex.: `orders.ts`, `filaments.ts`, `clients.ts`,
+  `queue.ts`, `audit.ts`) — cada um com `*.test.ts` ao lado.
+- **Supabase** em `src/lib/supabase/`: `server.ts` (RSC/Server Actions),
+  `client.ts` (browser), `middleware.ts` (refresh de sessão), `admin.ts`
+  (service role — só servidor), `realtime.ts`.
+- **Mutações** via **Server Actions** (`actions.ts` por rota); UI atualiza em
+  tempo real via Realtime (`realtime-refresh.tsx`).
+- **Schema** em `supabase/migrations/` (tabelas, RLS, índices, Realtime).
 
 ## Comandos
-
-Quando a aplicação existir, os comandos esperados são:
 
 ```bash
 bun install     # instalar dependências
 bun run dev     # ambiente de desenvolvimento (http://localhost:3000)
 bun run build   # build de produção
-bun run lint    # lint
-bun test        # testes
+bun test        # testes (bun test)
+bunx tsc --noEmit  # typecheck (não há script de lint dedicado)
 ```
 
 > Use **Bun** como package manager e runtime — não use `npm`/`yarn`/`pnpm`. O
-> lockfile é o `bun.lock`. Confirme os scripts reais no `package.json` antes de
-> usá-los — ele ainda não existe.
+> lockfile é o `bun.lock`. Os scripts reais estão no `package.json`
+> (`dev`/`build`/`start`/`test`); não há `lint` — use `tsc --noEmit`.
 
 ## Fluxo de trabalho esperado
 
