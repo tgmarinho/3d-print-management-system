@@ -7,6 +7,7 @@ import { OrderForm } from "../order-form";
 import { ProductionStatusControl } from "../production-status-control";
 import { loadOrderFormOptions } from "../options";
 import { deleteOrder } from "../actions";
+import { ConfirmDeleteForm } from "@/components/confirm-delete-form";
 
 export default async function EditOrderPage({
   params,
@@ -47,11 +48,13 @@ export default async function EditOrderPage({
 
       <Separator />
 
-      <form action={deleteOrder.bind(null, order.id)}>
-        <Button type="submit" variant="destructive" className="w-full">
-          Excluir pedido
-        </Button>
-      </form>
+      <ConfirmDeleteForm
+        action={deleteOrder.bind(null, order.id)}
+        trigger="Excluir pedido"
+        title="Excluir pedido?"
+        description="Esta ação remove o pedido permanentemente e o tira da fila."
+        confirmLabel="Excluir pedido"
+      />
     </section>
   );
 }

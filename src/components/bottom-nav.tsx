@@ -37,7 +37,7 @@ export function BottomNav() {
       null,
     );
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/90 backdrop-blur-sm">
+    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm">
       <div className="mx-auto grid max-w-3xl grid-cols-5">
         {items.map((item) => {
           const active = item.href === activeHref;

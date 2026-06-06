@@ -77,6 +77,12 @@ export function EntityCombobox({
       onChange={(opt) => onChange(opt?.value ?? "")}
       onBlur={onBlur}
       onCreateOption={onCreate ? handleCreate : undefined}
+      // No iOS o toque foca o input e abre o teclado, mas não dispara o "click"
+      // que abriria a lista — `openMenuOnFocus` garante que as opções apareçam
+      // assim que o campo é tocado. `menuShouldScrollIntoView` rola o menu para
+      // a área visível acima do teclado.
+      openMenuOnFocus
+      menuShouldScrollIntoView
       isClearable={isClearable}
       isDisabled={creating}
       isLoading={creating}

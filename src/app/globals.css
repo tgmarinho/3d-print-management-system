@@ -136,6 +136,16 @@
   html {
     @apply font-sans;
   }
+  /* No mobile, um toque duplo rápido em controles dispara o "double-tap zoom"
+     do Safari e atrasa o clique em ~300ms. `manipulation` mantém o pinch-zoom
+     (acessibilidade) mas remove o double-tap-zoom nos elementos interativos. */
+  button,
+  a,
+  label,
+  summary,
+  [role="button"] {
+    touch-action: manipulation;
+  }
   ::selection {
     background-color: var(--brand);
     color: var(--brand-foreground);

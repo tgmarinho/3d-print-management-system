@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fira_Sans, Fira_Code } from "next/font/google";
 import "./globals.css";
 
@@ -18,6 +18,12 @@ export const metadata: Metadata = {
   title: "3D Print · Gestão",
   description:
     "Sistema interno de gestão de impressão 3D — clientes, estoque de filamento e produção.",
+};
+
+// `viewport-fit=cover` é necessário para o iOS expor `env(safe-area-inset-*)`,
+// usado pela bottom nav para não ficar sob a home bar dos iPhones.
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

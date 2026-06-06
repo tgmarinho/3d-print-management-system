@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FilamentForm } from "../filament-form";
 import { deleteFilament } from "../actions";
+import { ConfirmDeleteForm } from "@/components/confirm-delete-form";
 import { StockEditor } from "./stock-editor";
 
 type Counts = { in_stock: number; on_order: number };
@@ -57,11 +58,13 @@ export default async function EditFilamentPage({
 
       <Separator />
 
-      <form action={deleteFilament.bind(null, filament.id)}>
-        <Button type="submit" variant="destructive" className="w-full">
-          Excluir filamento
-        </Button>
-      </form>
+      <ConfirmDeleteForm
+        action={deleteFilament.bind(null, filament.id)}
+        trigger="Excluir filamento"
+        title="Excluir filamento?"
+        description="Esta ação remove o filamento e o estoque vinculado permanentemente."
+        confirmLabel="Excluir filamento"
+      />
     </section>
   );
 }

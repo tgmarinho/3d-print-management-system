@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Product } from "@/lib/products";
 import { updateProduct, deleteProduct } from "../actions";
+import { ConfirmDeleteForm } from "@/components/confirm-delete-form";
 import { ProductFields } from "../product-fields";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -45,14 +46,14 @@ export default async function EditProductPage({
         </div>
       </form>
 
-      <form
+      <ConfirmDeleteForm
         action={deleteProduct.bind(null, product.id)}
         className="border-t pt-4"
-      >
-        <Button type="submit" variant="destructive" className="w-full">
-          Excluir produto
-        </Button>
-      </form>
+        trigger="Excluir produto"
+        title="Excluir produto?"
+        description="Esta ação remove o produto do catálogo permanentemente."
+        confirmLabel="Excluir produto"
+      />
     </section>
   );
 }

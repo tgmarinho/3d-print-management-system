@@ -4,7 +4,8 @@ import { useEffect, useState, useTransition } from "react";
 import {
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -45,8 +46,16 @@ export function QueueList({ orders }: { orders: OrderListItem[] }) {
   }, [orders, pending]);
 
   const sensors = useSensors(
-    // distance: 6 evita iniciar o arrasto num toque/scroll acidental no mobile.
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    // No desktop, o mouse inicia o arrasto após mover 6px (evita disparar num
+    // clique simples). No mobile, o PointerSensor do dnd-kit é instável no
+    // Safari iOS — o TouchSensor com `delay` é o caminho confiável: segurar a
+    // alça por ~180ms ativa o arrasto, e a `tolerance` permite um leve tremor de
+    // dedo sem cancelar. Como a alça já tem `touch-action: none`, o scroll da
+    // página não compete com o arrasto.
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 180, tolerance: 8 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -179,7 +188,7 @@ function QueueRow({
       <button
         type="button"
         aria-label="Arrastar para reordenar"
-        className="flex shrink-0 touch-none items-center px-1.5 text-muted-foreground hover:text-foreground"
+        className="flex shrink-0 touch-none select-none items-center px-1.5 text-muted-foreground hover:text-foreground [-webkit-touch-callout:none]"
         {...attributes}
         {...listeners}
       >

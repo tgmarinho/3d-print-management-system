@@ -17,7 +17,7 @@ export default async function AppLayout({
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-dvh pb-20">
+    <div className="min-h-dvh pb-[calc(5rem+env(safe-area-inset-bottom))]">
       <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <span className="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight">

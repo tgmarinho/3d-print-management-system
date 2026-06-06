@@ -8,6 +8,7 @@ import { ClientFields } from "../client-fields";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ConfirmDeleteForm } from "@/components/confirm-delete-form";
 
 export default async function EditClientPage({
   params,
@@ -80,11 +81,13 @@ export default async function EditClientPage({
             ser afetados.
           </p>
         </div>
-        <form action={deleteClient.bind(null, client.id)}>
-          <Button type="submit" variant="destructive" className="w-full">
-            Excluir cliente
-          </Button>
-        </form>
+        <ConfirmDeleteForm
+          action={deleteClient.bind(null, client.id)}
+          trigger="Excluir cliente"
+          title="Excluir cliente?"
+          description="Esta ação remove o cliente permanentemente. Pedidos vinculados podem ser afetados."
+          confirmLabel="Excluir cliente"
+        />
       </div>
     </section>
   );
