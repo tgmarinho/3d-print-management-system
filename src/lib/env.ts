@@ -23,14 +23,27 @@ export function requireServiceRoleKey(raw: RawEnv = process.env): string {
   return key;
 }
 
+// Acesso LITERAL a `process.env.NEXT_PUBLIC_*`. No bundle do client o
+// Turbopack/Next só substitui essas variáveis quando o acesso é literal —
+// acesso via alias (ex.: `raw[key]`) não é inlinado e fica `undefined` no
+// browser. Por isso montamos o objeto aqui com os literais e o repassamos.
+function publicEnv(): RawEnv {
+  return {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  };
+}
+
 // Lazy: valida só quando uma propriedade é acessada (runtime), não no import.
 // Assim o build/testes não exigem as variáveis presentes só por importar o módulo.
 export const env = {
   get supabaseUrl() {
-    return parseEnv().supabaseUrl;
+    return parseEnv(publicEnv()).supabaseUrl;
   },
   get supabaseAnonKey() {
-    return parseEnv().supabaseAnonKey;
+    return parseEnv(publicEnv()).supabaseAnonKey;
   },
   get supabaseServiceRoleKey() {
     return requireServiceRoleKey();

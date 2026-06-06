@@ -6,12 +6,61 @@ import { createClient } from "@/lib/supabase/server";
 import { logAudit } from "@/lib/audit";
 import {
   nextQueuePosition,
+  type Option,
   type PaymentStatus,
   type ProductionStatus,
 } from "@/lib/orders";
 import { orderSchema, type OrderInput } from "./schema";
 
 const LIST = "/pedidos";
+
+// Cadastro rápido a partir do combobox do pedido ("ou busca ou cadastra"):
+// cria a entidade só com o nome e devolve a nova option para já selecionar.
+export type QuickCreateResult =
+  | { ok: true; option: Option }
+  | { ok: false; message: string };
+
+async function quickCreatePerson(
+  table: "clients" | "sellers" | "modelers",
+  entityType: string,
+  listPath: string,
+  name: string,
+): Promise<QuickCreateResult> {
+  const trimmed = name.trim();
+  if (trimmed === "") return { ok: false, message: "Informe o nome." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(table)
+    .insert({ name: trimmed })
+    .select("id, name")
+    .single();
+  if (error) return { ok: false, message: error.message };
+
+  await logAudit({
+    action: "create",
+    entityType,
+    entityId: data.id,
+    details: { name: data.name },
+  });
+
+  revalidatePath(listPath);
+  return { ok: true, option: data as Option };
+}
+
+export async function quickCreateClient(name: string): Promise<QuickCreateResult> {
+  return quickCreatePerson("clients", "client", "/cadastros/clientes", name);
+}
+
+export async function quickCreateSeller(name: string): Promise<QuickCreateResult> {
+  return quickCreatePerson("sellers", "seller", "/cadastros/vendedores", name);
+}
+
+export async function quickCreateModeler(
+  name: string,
+): Promise<QuickCreateResult> {
+  return quickCreatePerson("modelers", "modeler", "/cadastros/modeladores", name);
+}
 
 // Resultado das actions de form: o client (RHF) navega no sucesso e reflete a
 // mensagem no erro. O client já validou com o mesmo schema, então mensagem

@@ -17,10 +17,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { EntityCombobox } from "@/components/entity-combobox";
 import type { Option, Order } from "@/lib/orders";
 import { cn } from "@/lib/utils";
 import { orderSchema, type OrderFormInput, type OrderInput } from "./schema";
-import { createOrder, updateOrder } from "./actions";
+import {
+  createOrder,
+  quickCreateClient,
+  quickCreateModeler,
+  quickCreateSeller,
+  updateOrder,
+} from "./actions";
 
 const LIST = "/pedidos";
 
@@ -91,20 +98,14 @@ export function OrderForm({
                 Cliente <span className="text-brand">*</span>
               </FormLabel>
               <FormControl>
-                <select
-                  {...field}
+                <EntityCombobox
+                  options={options.clients}
                   value={field.value ?? ""}
-                  className={selectClassName}
-                >
-                  <option value="" disabled>
-                    Selecione…
-                  </option>
-                  {options.clients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  placeholder="Buscar ou cadastrar cliente…"
+                  onCreate={quickCreateClient}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -118,18 +119,15 @@ export function OrderForm({
             <FormItem>
               <FormLabel>Vendedor</FormLabel>
               <FormControl>
-                <select
-                  {...field}
+                <EntityCombobox
+                  options={options.sellers}
                   value={field.value ?? ""}
-                  className={selectClassName}
-                >
-                  <option value="">— Nenhum —</option>
-                  {options.sellers.map((seller) => (
-                    <option key={seller.id} value={seller.id}>
-                      {seller.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  placeholder="Buscar ou cadastrar vendedor…"
+                  isClearable
+                  onCreate={quickCreateSeller}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -143,18 +141,15 @@ export function OrderForm({
             <FormItem>
               <FormLabel>Modelador</FormLabel>
               <FormControl>
-                <select
-                  {...field}
+                <EntityCombobox
+                  options={options.modelers}
                   value={field.value ?? ""}
-                  className={selectClassName}
-                >
-                  <option value="">— Nenhum —</option>
-                  {options.modelers.map((modeler) => (
-                    <option key={modeler.id} value={modeler.id}>
-                      {modeler.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  placeholder="Buscar ou cadastrar modelador…"
+                  isClearable
+                  onCreate={quickCreateModeler}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
