@@ -1,96 +1,96 @@
-# Plano de Testes — Mobile Responsivo (QA)
+# Test Plan — Mobile Responsive (QA)
 
-Plano de QA para validar a qualidade da **versão mobile responsiva** do
-3D Print SaaS Management System. O produto é **mobile-first** (bottom nav fixa,
-container `max-w-3xl`, sem app nativo), então o celular é o cenário primário —
-não um caso de borda.
+QA test plan to validate the quality of the **mobile responsive version** of the
+3D Print SaaS Management System. The product is **mobile-first** (fixed bottom
+nav, `max-w-3xl` container, no native app), so the phone is the primary
+scenario — not an edge case.
 
-> Como usar: execute por seção, marque ✅/❌/➖ (n/a) em cada item e registre o
-> resultado real (print, comportamento observado). Bug encontrado → anote em
-> "Registro de defeitos" no fim do doc.
+> How to use: run section by section, mark ✅/❌/➖ (n/a) on each item, and record
+> the actual result (screenshot, observed behavior). Bug found → log it in the
+> "Defect log" at the end of the document.
 
 ---
 
-## 1. Escopo e ambiente
+## 1. Scope and environment
 
-**Build sob teste:** branch `_____` · commit `_____` · data `_____`
-**Testador:** `_____`
+**Build under test:** branch `_____` · commit `_____` · date `_____`
+**Tester:** `_____`
 
-**Como subir o app:**
+**How to start the app:**
 
 ```bash
 bun install
 bun run dev   # http://localhost:3000
 ```
 
-**Pré-requisitos de dados:** ter no banco pelo menos — 3 clientes, 2 vendedores,
-2 modeladores, 3 produtos, 3 filamentos (1 com estoque baixo), 2 locais e
-5 pedidos em status variados (a pagar/pago, em espera/produzindo/concluído).
-Isso garante listas com scroll, badges e filtros com conteúdo real.
+**Data prerequisites:** have in the database at least — 3 clients, 2 sellers,
+2 modelers, 3 products, 3 filaments (1 with low stock), 2 locations and
+5 orders in varied statuses (to pay/paid, waiting/printing/completed).
+This ensures lists with scroll, badges and filters with real content.
 
-### 1.1 Matriz de dispositivos e viewports
+### 1.1 Device and viewport matrix
 
-Testar em pelo menos **um aparelho real** (iOS Safari **e** Android Chrome se
-possível) + DevTools para os breakpoints. Larguras-alvo:
+Test on at least **one real device** (iOS Safari **and** Android Chrome if
+possible) + DevTools for the breakpoints. Target widths:
 
-| Faixa | Largura | Representa | Prioridade |
+| Range | Width | Represents | Priority |
 |---|---|---|---|
-| Mobile pequeno | **320 px** | iPhone SE / Galaxy antigo | Alta |
-| Mobile padrão | **375–390 px** | iPhone 12–15, Pixel | **Crítica** |
-| Mobile grande | **414–430 px** | iPhone Pro Max | Alta |
-| Tablet retrato | **768 px** | iPad | Média |
-| Limite do container | **≥ 768 px** | desktop (`max-w-3xl` ativa) | Média |
+| Small mobile | **320 px** | iPhone SE / old Galaxy | High |
+| Standard mobile | **375–390 px** | iPhone 12–15, Pixel | **Critical** |
+| Large mobile | **414–430 px** | iPhone Pro Max | High |
+| Tablet portrait | **768 px** | iPad | Medium |
+| Container limit | **≥ 768 px** | desktop (`max-w-3xl` kicks in) | Medium |
 
-**Navegadores:** Safari iOS, Chrome Android, Chrome desktop (DevTools device
-mode). Bônus: Firefox.
+**Browsers:** Safari iOS, Chrome Android, Chrome desktop (DevTools device
+mode). Bonus: Firefox.
 
-**Condições:** retrato e paisagem; tema claro **e** escuro (next-themes segue o
-sistema — alterne a preferência do SO); rede 3G lenta (DevTools throttling) para
-ver loading/realtime.
-
----
-
-## 2. Checklist transversal (vale para todas as telas)
-
-Rodar este bloco em cada tela principal, no viewport crítico (375 px):
-
-- [ ] **Sem scroll horizontal** — nada "vaza" da largura da tela em 320/375 px.
-- [ ] **Alvos de toque ≥ 44×44 px** — botões, abas, ícones de ação, alça de drag.
-- [ ] **Texto legível** sem zoom (≥ 14–16 px em corpo; sem truncamento que esconda info essencial).
-- [ ] **Bottom nav não cobre conteúdo** — último item da lista/CTA acessível acima da barra fixa (padding inferior suficiente).
-- [ ] **Safe area iOS** — bottom nav respeita o "notch"/home indicator (não fica colada na borda nem cortada).
-- [ ] **Header sticky** funciona — fica fixo no scroll, com backdrop blur, sem sobrepor conteúdo.
-- [ ] **Estados de foco/toque** visíveis (feedback ao tocar botões).
-- [ ] **Tema escuro** — contraste OK, sem texto invisível, badges e inputs legíveis.
-- [ ] **Loading/empty states** — listas vazias mostram mensagem amigável, não tela quebrada.
-- [ ] **Toasts (sonner)** aparecem visíveis e não atrás da bottom nav.
-- [ ] **Orientação paisagem** — layout não quebra ao girar.
+**Conditions:** portrait and landscape; light **and** dark theme (next-themes
+follows the system — toggle the OS preference); slow 3G network (DevTools
+throttling) to observe loading/realtime.
 
 ---
 
-## 3. Navegação (bottom nav + header)
+## 2. Cross-cutting checklist (applies to all screens)
 
-Arquivos: `src/components/bottom-nav.tsx`, `src/app/(app)/layout.tsx`
+Run this block on each main screen, at the critical viewport (375 px):
 
-- [ ] As 5 abas (Início, Estoque, Pedidos, Fila, Cadastros) cabem na largura de 320 px sem espremer/quebrar ícone+label.
-- [ ] Aba ativa destacada corretamente em cada rota.
-- [ ] **Item ativo por prefixo mais específico**: ao entrar em `/cadastros/filamentos/[id]`, destaca **Cadastros** (e "Estoque" quando vier por essa porta) de forma consistente.
-- [ ] "Estoque" e "Cadastros" apontam para destinos corretos (Estoque → filamentos).
-- [ ] Header: logo "3D·PRINT" visível; botão **Sair** acessível e com alvo de toque adequado.
-- [ ] Botão **Sair** efetivamente desloga e redireciona para `/login`.
-- [ ] Navegação entre abas é fluida (sem flash/recarregamento estranho).
-- [ ] Voltar do navegador/gesto de voltar mantém a aba correta destacada.
+- [ ] **No horizontal scroll** — nothing "leaks" beyond the screen width at 320/375 px.
+- [ ] **Touch targets ≥ 44×44 px** — buttons, tabs, action icons, drag handle.
+- [ ] **Legible text** without zoom (≥ 14–16 px for body; no truncation that hides essential info).
+- [ ] **Bottom nav does not cover content** — last list item/CTA reachable above the fixed bar (enough bottom padding).
+- [ ] **iOS safe area** — bottom nav respects the notch/home indicator (not flush against the edge nor clipped).
+- [ ] **Sticky header** works — stays fixed on scroll, with backdrop blur, without overlapping content.
+- [ ] **Focus/touch states** visible (feedback when tapping buttons).
+- [ ] **Dark theme** — contrast OK, no invisible text, badges and inputs legible.
+- [ ] **Loading/empty states** — empty lists show a friendly message, not a broken screen.
+- [ ] **Toasts (sonner)** appear visible and not behind the bottom nav.
+- [ ] **Landscape orientation** — layout does not break when rotated.
+
+---
+
+## 3. Navigation (bottom nav + header)
+
+Files: `src/components/bottom-nav.tsx`, `src/app/(app)/layout.tsx`
+
+- [ ] The 5 tabs (Home, Stock, Orders, Queue, Records) fit within 320 px width without squeezing/breaking icon+label.
+- [ ] Active tab highlighted correctly on each route.
+- [ ] **Active item by most specific prefix**: when entering `/cadastros/filamentos/[id]`, it highlights **Records** (and "Stock" when reached through that entry point) consistently.
+- [ ] "Stock" and "Records" point to the correct destinations (Stock → filaments).
+- [ ] Header: logo "3D·PRINT" visible; **Sign out** button accessible and with an adequate touch target.
+- [ ] **Sign out** button actually logs out and redirects to `/login`.
+- [ ] Navigation between tabs is smooth (no odd flash/reload).
+- [ ] Browser back/back gesture keeps the correct tab highlighted.
 
 ---
 
 ## 4. Login (`/login`)
 
-- [ ] Formulário centralizado e legível em 320/375 px.
-- [ ] Alternância **sign-in ↔ sign-up** funciona e não quebra layout.
-- [ ] Teclado virtual não cobre o botão de submit (campo rola para a vista ao focar).
-- [ ] Inputs de e-mail/senha com `type` correto (teclado de e-mail; senha mascarada).
-- [ ] Erros de credencial exibidos de forma legível.
-- [ ] Autofill/gerenciador de senhas do navegador funciona.
+- [ ] Form centered and legible at 320/375 px.
+- [ ] **Sign-in ↔ sign-up** toggle works and does not break the layout.
+- [ ] Virtual keyboard does not cover the submit button (the field scrolls into view on focus).
+- [ ] Email/password inputs with the correct `type` (email keyboard; password masked).
+- [ ] Credential errors displayed legibly.
+- [ ] Browser autofill/password manager works.
 
 ---
 
@@ -98,151 +98,151 @@ Arquivos: `src/components/bottom-nav.tsx`, `src/app/(app)/layout.tsx`
 
 Realtime: `filament_stock`, `filaments`, `orders`
 
-- [ ] Cards/seções (estoque baixo, fila, produção, pagamentos pendentes, histórico) empilham bem em 1 coluna no mobile.
-- [ ] Números/valores não estouram o card; valores em R$ formatados.
-- [ ] Badges de status legíveis (claro e escuro).
-- [ ] Listas longas têm scroll adequado; nada cortado pela bottom nav.
-- [ ] **Realtime**: alterar estoque/pedido em outra aba/sessão reflete aqui sem reload manual (testar com throttling para observar).
-- [ ] Links dos cards levam à tela correta (ex: estoque baixo → filamentos).
+- [ ] Cards/sections (low stock, queue, production, pending payments, history) stack well in 1 column on mobile.
+- [ ] Numbers/values do not overflow the card; R$ values formatted.
+- [ ] Status badges legible (light and dark).
+- [ ] Long lists scroll properly; nothing clipped by the bottom nav.
+- [ ] **Realtime**: changing stock/order in another tab/session reflects here without manual reload (test with throttling to observe).
+- [ ] Card links lead to the correct screen (e.g. low stock → filaments).
 
 ---
 
-## 6. Pedidos
+## 6. Orders
 
-### 6.1 Lista (`/pedidos`) — `orders-list.tsx`
+### 6.1 List (`/pedidos`) — `orders-list.tsx`
 
-- [ ] Filtro por **pagamento** (Todos / A pagar / Pagos) usável com o polegar.
-- [ ] Filtro por **status de produção** (Todos / Em espera / Produzindo / Concluído) cabe na largura sem quebrar.
-- [ ] Busca por cliente/produto filtra em tempo real.
-- [ ] Cards de pedido legíveis: cliente, produto, valor, badges de status.
-- [ ] Toggle **marcar como pago/a pagar** (Check/RotateCcw) com alvo de toque OK e feedback (toast).
-- [ ] Resumo **"A receber"** soma correta e visível.
-- [ ] Combinar filtros + busca não quebra (resultado coerente / empty state).
+- [ ] **Payment** filter (All / To pay / Paid) usable with the thumb.
+- [ ] **Production status** filter (All / Waiting / Printing / Completed) fits within the width without breaking.
+- [ ] Search by client/product filters in real time.
+- [ ] Order cards legible: client, product, value, status badges.
+- [ ] **Mark as paid/to pay** toggle (Check/RotateCcw) with OK touch target and feedback (toast).
+- [ ] **"To receive"** summary sums correctly and is visible.
+- [ ] Combining filters + search does not break (coherent result / empty state).
 
-### 6.2 Novo / Editar (`/pedidos/novo`, `/pedidos/[id]`) — `order-form.tsx`
+### 6.2 New / Edit (`/pedidos/novo`, `/pedidos/[id]`) — `order-form.tsx`
 
-- [ ] **EntityCombobox (Cliente)**: abre, busca, e o **menu não é cortado** pelo container nem pela bottom nav (menu portal).
-- [ ] **Quick-create inline**: cadastrar cliente novo dentro do combobox; valida nome duplicado; volta selecionado.
-- [ ] Mesmo comportamento para **Vendedor** e **Modelador** (clearable funciona).
-- [ ] **Select de Produto** abre o picker nativo do celular corretamente.
-- [ ] Teclado numérico aparece em **Quantidade** e **Valor** (inputs number).
-- [ ] Textarea de descrição expande/rola bem; teclado não cobre o campo.
-- [ ] Botão de **salvar** sempre acessível (não atrás do teclado/bottom nav).
-- [ ] Validação (RHF + Zod) exibe erros legíveis abaixo dos campos.
-- [ ] **ProductionStatusControl** (Em espera/Produzindo/Concluído) — segmentos tocáveis, estado otimista, toast.
-- [ ] Botão **excluir** (em editar) com confirmação; alvo de toque OK.
-- [ ] Salvar redireciona/atualiza a lista corretamente.
-
----
-
-## 7. Fila (`/fila`) — `queue-list.tsx`
-
-Crítico para mobile (drag & drop por toque).
-
-- [ ] **Drag & drop por toque** reordena (PointerSensor, distância 6 px evita ativar em toque acidental/scroll).
-- [ ] Scroll vertical da lista **não** dispara drag por engano.
-- [ ] Alça de arraste (GripVertical) com alvo de toque ≥ 44 px.
-- [ ] Botões **"Mover para início"** (ChevronsUp) e **"Mover para fim"** (ChevronsDown) funcionam como alternativa ao drag.
-- [ ] Botões corretos ficam **desabilitados** no 1º/último item.
-- [ ] **Estado otimista**: ordem muda na hora; não "pula" de volta.
-- [ ] **Realtime**: reordenar em outra sessão reflete aqui sem sobrescrever um drag em andamento.
-- [ ] Rank/posição exibido corretamente após reordenar.
-- [ ] Lista longa: itens não ficam sob a bottom nav; scroll suave.
+- [ ] **EntityCombobox (Client)**: opens, searches, and the **menu is not clipped** by the container nor by the bottom nav (portal menu).
+- [ ] **Inline quick-create**: register a new client inside the combobox; validates duplicate name; returns selected.
+- [ ] Same behavior for **Seller** and **Modeler** (clearable works).
+- [ ] **Product Select** opens the phone's native picker correctly.
+- [ ] Numeric keyboard appears for **Quantity** and **Value** (number inputs).
+- [ ] Description textarea expands/scrolls well; keyboard does not cover the field.
+- [ ] **Save** button always accessible (not behind the keyboard/bottom nav).
+- [ ] Validation (RHF + Zod) shows legible errors below the fields.
+- [ ] **ProductionStatusControl** (Waiting/Printing/Completed) — tappable segments, optimistic state, toast.
+- [ ] **Delete** button (in edit) with confirmation; OK touch target.
+- [ ] Saving redirects/updates the list correctly.
 
 ---
 
-## 8. Cadastros (hub e entidades)
+## 7. Queue (`/fila`) — `queue-list.tsx`
+
+Critical for mobile (touch drag-and-drop).
+
+- [ ] **Touch drag-and-drop** reorders (PointerSensor, 6 px distance avoids triggering on accidental touch/scroll).
+- [ ] Vertical list scroll does **not** trigger a drag by mistake.
+- [ ] Drag handle (GripVertical) with touch target ≥ 44 px.
+- [ ] **"Move to top"** (ChevronsUp) and **"Move to bottom"** (ChevronsDown) buttons work as an alternative to dragging.
+- [ ] The correct buttons are **disabled** on the first/last item.
+- [ ] **Optimistic state**: order changes instantly; does not "snap" back.
+- [ ] **Realtime**: reordering in another session reflects here without overwriting a drag in progress.
+- [ ] Rank/position displayed correctly after reordering.
+- [ ] Long list: items do not end up under the bottom nav; smooth scroll.
+
+---
+
+## 8. Records (hub and entities)
 
 ### 8.1 Hub (`/cadastros`)
 
-- [ ] Menu com as 7 entidades em cards/lista tocáveis; sem overflow.
-- [ ] Cada item leva à tela correta.
+- [ ] Menu with the 7 entities in tappable cards/list; no overflow.
+- [ ] Each item leads to the correct screen.
 
-### 8.2 Clientes (`/cadastros/clientes` + novo/`[id]`)
+### 8.2 Clients (`/cadastros/clientes` + new/`[id]`)
 
-- [ ] **Busca** filtra por nome, empresa, e-mail e telefone.
-- [ ] Cards com avatar de iniciais + dados em linha legíveis (sem quebra feia em 320 px).
-- [ ] Form novo/editar: campos (nome*, empresa, e-mail, telefone) com `type` e teclado corretos (e-mail/tel).
-- [ ] Exclusão com confirmação.
+- [ ] **Search** filters by name, company, email and phone.
+- [ ] Cards with initials avatar + inline data legible (no ugly wrapping at 320 px).
+- [ ] New/edit form: fields (name*, company, email, phone) with the correct `type` and keyboard (email/tel).
+- [ ] Deletion with confirmation.
 
-### 8.3 Produtos (`/cadastros/produtos` + novo/`[id]`)
+### 8.3 Products (`/cadastros/produtos` + new/`[id]`)
 
-- [ ] Lista: nome + descrição truncada (2 linhas) sem quebrar layout.
-- [ ] Form: nome*, descrição (textarea) usáveis no mobile.
+- [ ] List: name + truncated description (2 lines) without breaking the layout.
+- [ ] Form: name*, description (textarea) usable on mobile.
 
-### 8.4 Filamentos / Estoque (`/cadastros/filamentos` + novo/`[id]`)
+### 8.4 Filaments / Stock (`/cadastros/filamentos` + new/`[id]`)
 
-Realtime: `filament_stock`, `filaments` · É também a aba **"Estoque"**.
+Realtime: `filament_stock`, `filaments` · This is also the **"Stock"** tab.
 
-- [ ] Lista mostra cor + material, marca + peso, **badge "Estoque baixo"**, contador de rolos.
-- [ ] **Realtime** de estoque reflete mudanças ao vivo.
-- [ ] Form: cor*, material*, marca, peso (number), limite estoque baixo (number) — teclados corretos.
-- [ ] **Gerenciador de estoque por local** (em editar) usável no mobile: ajustar quantidade por local sem layout quebrado.
+- [ ] List shows color + material, brand + weight, **"Low stock" badge**, roll counter.
+- [ ] **Realtime** stock reflects live changes.
+- [ ] Form: color*, material*, brand, weight (number), low-stock threshold (number) — correct keyboards.
+- [ ] **Per-location stock manager** (in edit) usable on mobile: adjust quantity per location without a broken layout.
 
-### 8.5 Locais (`/cadastros/locais`)
+### 8.5 Locations (`/cadastros/locais`)
 
-- [ ] Criar/editar/remover local de estoque (casa, loja) com alvos de toque OK.
+- [ ] Create/edit/remove a stock location (home, store) with OK touch targets.
 
-### 8.6 Usuários (`/cadastros/usuarios`)
+### 8.6 Users (`/cadastros/usuarios`)
 
-- [ ] Lista de usuários legível.
-- [ ] Criar usuário com senha provisória — form usável no mobile.
-
----
-
-## 9. Auditoria (`/auditoria`)
-
-- [ ] Lista (ator, ação/badge, entidade, detalhes, timestamp) legível em 1 coluna no mobile — sem tabela larga que force scroll horizontal.
-- [ ] Filtros usáveis com o polegar.
-- [ ] Timestamps formatados de forma legível.
+- [ ] User list legible.
+- [ ] Create a user with a temporary password — form usable on mobile.
 
 ---
 
-## 10. Não-funcional
+## 9. Audit (`/auditoria`)
 
-- [ ] **Performance**: telas principais carregam < ~3 s em 3G simulado; sem travar ao rolar listas longas.
-- [ ] **Sem erros no console** (warnings de hidratação, chaves React, layout shift) ao navegar pelo app.
-- [ ] **Realtime resiliente**: perder/reconectar rede não duplica nem perde atualizações.
-- [ ] **Acessibilidade básica**: navegação por leitor de tela nos botões de ação principais; ARIA labels presentes (fila, combobox); contraste AA.
-- [ ] **Sem layout shift** perceptível ao carregar imagens/badges/realtime.
-- [ ] **PWA/zoom**: pinch-to-zoom não quebra; viewport meta não bloqueia acessibilidade indevidamente.
+- [ ] List (actor, action/badge, entity, details, timestamp) legible in 1 column on mobile — no wide table forcing horizontal scroll.
+- [ ] Filters usable with the thumb.
+- [ ] Timestamps formatted legibly.
 
 ---
 
-## 11. Critérios de aceite (gate de release)
+## 10. Non-functional
 
-A versão mobile é aprovada quando:
-
-1. **Zero** scroll horizontal e **zero** conteúdo coberto pela bottom nav nas larguras 320/375/430 px.
-2. Todos os fluxos críticos completáveis **só com o polegar** em aparelho real: criar pedido (com quick-create de cliente), reordenar fila, marcar pago, ajustar estoque.
-3. Combobox e selects abrem com menu **totalmente visível** (não cortado).
-4. Realtime atualiza dashboard/estoque/fila sem reload manual.
-5. Tema claro e escuro sem texto ilegível.
-6. **Nenhum bug bloqueante (P0/P1)** em aberto. P2/P3 documentados e aceitos.
+- [ ] **Performance**: main screens load in < ~3 s on simulated 3G; no jank when scrolling long lists.
+- [ ] **No console errors** (hydration warnings, React keys, layout shift) while navigating the app.
+- [ ] **Resilient realtime**: losing/reconnecting the network neither duplicates nor loses updates.
+- [ ] **Basic accessibility**: screen reader navigation on the main action buttons; ARIA labels present (queue, combobox); AA contrast.
+- [ ] **No perceptible layout shift** when loading images/badges/realtime.
+- [ ] **PWA/zoom**: pinch-to-zoom does not break; viewport meta does not improperly block accessibility.
 
 ---
 
-## 12. Registro de defeitos
+## 11. Acceptance criteria (release gate)
 
-| # | Tela / componente | Viewport | Severidade (P0–P3) | Descrição | Passos p/ reproduzir | Status |
+The mobile version is approved when:
+
+1. **Zero** horizontal scroll and **zero** content covered by the bottom nav at 320/375/430 px widths.
+2. All critical flows completable **with the thumb only** on a real device: create order (with client quick-create), reorder queue, mark paid, adjust stock.
+3. Combobox and selects open with the menu **fully visible** (not clipped).
+4. Realtime updates dashboard/stock/queue without a manual reload.
+5. Light and dark theme with no illegible text.
+6. **No blocking bugs (P0/P1)** open. P2/P3 documented and accepted.
+
+---
+
+## 12. Defect log
+
+| # | Screen / component | Viewport | Severity (P0–P3) | Description | Steps to reproduce | Status |
 |---|---|---|---|---|---|---|
 | 1 |  |  |  |  |  |  |
 | 2 |  |  |  |  |  |  |
 
-**Severidade:** P0 = bloqueia uso · P1 = quebra fluxo importante · P2 = degrada UX ·
-P3 = cosmético.
+**Severity:** P0 = blocks usage · P1 = breaks an important flow · P2 = degrades UX ·
+P3 = cosmetic.
 
 ---
 
-## Anexo — Roteiro rápido de smoke test (≈ 10 min)
+## Appendix — Quick smoke test script (≈ 10 min)
 
-Para um sanity check rápido a cada build, em **1 aparelho real (375 px)**:
+For a quick sanity check on each build, on **1 real device (375 px)**:
 
-1. Login → Dashboard carrega com dados e realtime.
-2. Bottom nav: percorrer as 5 abas, sem overflow.
-3. Pedidos → Novo → combobox de cliente + **quick-create** → salvar.
-4. Fila → reordenar por **drag** e por **botões** de início/fim.
-5. Pedidos → marcar um como **pago** (toast).
-6. Estoque → abrir filamento → ajustar quantidade por local.
-7. Alternar **tema escuro** e revisar contraste.
-8. Girar para **paisagem** em uma tela de lista.
+1. Login → Dashboard loads with data and realtime.
+2. Bottom nav: walk through the 5 tabs, no overflow.
+3. Orders → New → client combobox + **quick-create** → save.
+4. Queue → reorder by **drag** and by **top/bottom buttons**.
+5. Orders → mark one as **paid** (toast).
+6. Stock → open a filament → adjust quantity per location.
+7. Toggle **dark theme** and review contrast.
+8. Rotate to **landscape** on a list screen.

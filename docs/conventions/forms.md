@@ -1,52 +1,54 @@
-# Formulários — React Hook Form + Zod
+# Forms — React Hook Form + Zod
 
-Convenção para **todo formulário com validação, estado ou submit não-trivial**
-neste projeto. Para um `<input>` solto, sem validação, não force o setup.
+Convention for **every form with non-trivial validation, state, or submit logic**
+in this project. For a standalone `<input>` with no validation, don't force the setup.
 
-## Princípios
+## Principles
 
-1. **O schema Zod é a fonte de verdade.** Defina o schema uma vez, derive o tipo
-   com `z.infer` e use o mesmo schema no client (UX) e no servidor (segurança).
-2. **Valide no client _e_ revalide no servidor.** RHF + `zodResolver` dá o
-   feedback instantâneo; a Server Action **revalida com o mesmo schema** — o
-   client é conveniência, o servidor é a fronteira de confiança.
-3. **Schema compartilhado** mora junto da feature (ex.:
-   `src/app/(app)/filamentos/schema.ts`), importado pelo form e pela action.
-4. **Selects:** avançados (busca/async/multi) → `react-select`; simples →
-   `Select` do shadcn.
+1. **The Zod schema is the source of truth.** Define the schema once, derive the
+   type with `z.infer`, and use the same schema on the client (UX) and on the
+   server (security).
+2. **Validate on the client _and_ re-validate on the server.** RHF +
+   `zodResolver` provides instant feedback; the Server Action **re-validates with
+   the same schema** — the client is a convenience, the server is the trust
+   boundary.
+3. **Shared schema** lives alongside the feature (e.g.
+   `src/app/(app)/filamentos/schema.ts`), imported by both the form and the action.
+4. **Selects:** advanced (search/async/multi) → `react-select`; simple →
+   shadcn's `Select`.
 
-Pacotes (já instalados): `react-hook-form`, `@hookform/resolvers`, `zod`.
-Componentes de UI: `src/components/ui/form.tsx` (shadcn, sobre RHF).
+Packages (already installed): `react-hook-form`, `@hookform/resolvers`, `zod`.
+UI components: `src/components/ui/form.tsx` (shadcn, on top of RHF).
 
-## Exemplo de referência
+## Reference example
 
-### 1. Schema compartilhado — `schema.ts`
+### 1. Shared schema — `schema.ts`
 
 ```ts
 import { z } from "zod";
 
-export const filamentoSchema = z.object({
-  nome: z.string().min(1, "Informe o nome"),
+export const filamentSchema = z.object({
+  name: z.string().min(1, "Name is required"),
   material: z.enum(["PLA", "PETG", "ABS", "TPU"]),
-  cor: z.string().min(1, "Informe a cor"),
-  pesoGramas: z.coerce.number().int().positive("Peso deve ser positivo"),
+  color: z.string().min(1, "Color is required"),
+  weightGrams: z.coerce.number().int().positive("Weight must be positive"),
 });
 
-export type FilamentoInput = z.infer<typeof filamentoSchema>;
+export type FilamentInput = z.infer<typeof filamentSchema>;
 ```
 
-### 2. Server Action — `actions.ts` (revalida com o MESMO schema)
+### 2. Server Action — `actions.ts` (re-validates with the SAME schema)
 
 ```ts
 "use server";
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { filamentoSchema, type FilamentoInput } from "./schema";
+import { filamentSchema, type FilamentInput } from "./schema";
 
-export async function criarFilamento(input: FilamentoInput) {
-  // Fronteira de confiança: nunca confie no client.
-  const parsed = filamentoSchema.safeParse(input);
+export async function createFilament(input: FilamentInput) {
+  // Trust boundary: never trust the client.
+  const parsed = filamentSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false as const, errors: z.flattenError(parsed.error).fieldErrors };
   }
@@ -60,7 +62,7 @@ export async function criarFilamento(input: FilamentoInput) {
 }
 ```
 
-### 3. Form no client — `filamento-form.tsx`
+### 3. Client form — `filamento-form.tsx`
 
 ```tsx
 "use client";
@@ -72,22 +74,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { criarFilamento } from "./actions";
-import { filamentoSchema, type FilamentoInput } from "./schema";
+import { createFilament } from "./actions";
+import { filamentSchema, type FilamentInput } from "./schema";
 
-export function FilamentoForm() {
-  const form = useForm<FilamentoInput>({
-    resolver: zodResolver(filamentoSchema),
-    defaultValues: { nome: "", material: "PLA", cor: "", pesoGramas: 1000 },
+export function FilamentForm() {
+  const form = useForm<FilamentInput>({
+    resolver: zodResolver(filamentSchema),
+    defaultValues: { name: "", material: "PLA", color: "", weightGrams: 1000 },
   });
 
-  async function onSubmit(values: FilamentoInput) {
-    const res = await criarFilamento(values);
+  async function onSubmit(values: FilamentInput) {
+    const res = await createFilament(values);
     if (!res.ok) {
-      // Reflete erros vindos do servidor nos campos.
+      // Reflect server-side errors back onto the fields.
       if (res.errors) {
         for (const [field, msgs] of Object.entries(res.errors)) {
-          form.setError(field as keyof FilamentoInput, { message: msgs?.[0] });
+          form.setError(field as keyof FilamentInput, { message: msgs?.[0] });
         }
       }
       return;
@@ -100,10 +102,10 @@ export function FilamentoForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="nome"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nome</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -111,9 +113,9 @@ export function FilamentoForm() {
             </FormItem>
           )}
         />
-        {/* demais campos seguem o mesmo padrão */}
+        {/* remaining fields follow the same pattern */}
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Salvar
+          Save
         </Button>
       </form>
     </Form>
@@ -121,15 +123,16 @@ export function FilamentoForm() {
 }
 ```
 
-## Notas
+## Notes
 
-- **`z.coerce`** em campos numéricos: inputs HTML entregam string; `coerce`
-  converte antes de validar.
-- **Estado de submit:** use `form.formState.isSubmitting` para desabilitar o
-  botão — não crie um `useState` paralelo.
-- **Server Action vs `FormData`:** prefira passar o objeto tipado (validado pelo
-  RHF) para a action, como acima. A action revalida com Zod de qualquer forma.
-  O padrão `<form action={...}>` com `FormData` (ver
-  `src/app/(auth)/login/`) é aceitável para forms triviais sem validação rica.
-- **TDD:** teste o schema (casos válidos/inválidos) e a action separadamente do
-  componente; são a parte com regra de negócio.
+- **`z.coerce`** on numeric fields: HTML inputs deliver strings; `coerce`
+  converts before validating.
+- **Submit state:** use `form.formState.isSubmitting` to disable the button —
+  don't create a parallel `useState`.
+- **Server Action vs `FormData`:** prefer passing the typed object (validated by
+  RHF) to the action, as shown above. The action re-validates with Zod either
+  way. The `<form action={...}>` pattern with `FormData` (see
+  `src/app/(auth)/login/`) is acceptable for trivial forms without rich
+  validation.
+- **TDD:** test the schema (valid/invalid cases) and the action separately from
+  the component; they hold the business logic.

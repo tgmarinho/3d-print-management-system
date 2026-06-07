@@ -1,0 +1,65 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">3D Print management system preview</title>
+  <desc id="desc">A bilingual dashboard preview for clients, filament stock, production queue, and audit history.</desc>
+  <rect width="1280" height="720" fill="#FBFAF5"/>
+  <path d="M0 0h1280v720H0z" fill="url(#grid)" opacity=".42"/>
+  <rect x="80" y="70" width="1120" height="580" rx="22" fill="#FFFFFF" stroke="#DED8CA"/>
+  <rect x="80" y="70" width="1120" height="72" rx="22" fill="#2F2C28"/>
+  <path d="M80 120h1120v22H80z" fill="#2F2C28"/>
+  <rect x="112" y="96" width="15" height="15" rx="4" fill="#E2772B"/>
+  <text x="140" y="110" fill="#F7F2E8" font-family="Fira Code, ui-monospace, monospace" font-size="20" font-weight="700">3D·PRINT</text>
+  <text x="1040" y="109" fill="#F7F2E8" font-family="Fira Code, ui-monospace, monospace" font-size="14" font-weight="600">PT</text>
+  <rect x="1070" y="88" width="44" height="32" rx="8" fill="#F7F2E8"/>
+  <text x="1083" y="109" fill="#2F2C28" font-family="Fira Code, ui-monospace, monospace" font-size="14" font-weight="700">EN</text>
+  <text x="112" y="200" fill="#E2772B" font-family="Fira Code, ui-monospace, monospace" font-size="17" font-weight="700">3D PRINT MANAGEMENT</text>
+  <text x="112" y="252" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="42" font-weight="700">Clients, stock, and production</text>
+  <text x="112" y="298" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="42" font-weight="700">in one internal system.</text>
+  <text x="112" y="340" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="22">Mobile-first workflow for custom 3D printing operations.</text>
+  <rect x="112" y="386" width="185" height="52" rx="10" fill="#322E29"/>
+  <text x="141" y="420" fill="#FBFAF5" font-family="Fira Sans, Arial, sans-serif" font-size="18" font-weight="700">Open dashboard</text>
+  <rect x="328" y="386" width="176" height="52" rx="10" fill="#FFFFFF" stroke="#DED8CA"/>
+  <text x="356" y="420" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="18" font-weight="700">View records</text>
+  <g transform="translate(660 178)">
+    <rect width="420" height="340" rx="20" fill="#FBFAF5" stroke="#DED8CA"/>
+    <text x="28" y="48" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="26" font-weight="700">Dashboard</text>
+    <g transform="translate(28 78)">
+      <rect width="364" height="58" rx="12" fill="#FFFFFF" stroke="#E8E0D2"/>
+      <circle cx="32" cy="29" r="14" fill="#F6D5C0"/>
+      <path d="M25 29h14M32 22v14" stroke="#B94F16" stroke-width="3" stroke-linecap="round"/>
+      <text x="60" y="27" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="16" font-weight="700">Low filament stock</text>
+      <text x="60" y="45" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="13">PLA orange · 1 spool left</text>
+      <rect x="306" y="17" width="36" height="24" rx="7" fill="#D75532"/>
+      <text x="318" y="34" fill="#FFFFFF" font-family="Fira Code, ui-monospace, monospace" font-size="13" font-weight="700">3</text>
+    </g>
+    <g transform="translate(28 154)">
+      <rect width="364" height="58" rx="12" fill="#FFFFFF" stroke="#E8E0D2"/>
+      <circle cx="32" cy="29" r="14" fill="#EDE7DB"/>
+      <text x="26" y="35" fill="#746C60" font-family="Fira Code, ui-monospace, monospace" font-size="16" font-weight="700">1</text>
+      <text x="60" y="27" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="16" font-weight="700">Current queue</text>
+      <text x="60" y="45" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="13">Helmet prototype · producing next</text>
+    </g>
+    <g transform="translate(28 230)">
+      <rect width="364" height="58" rx="12" fill="#FFFFFF" stroke="#E8E0D2"/>
+      <circle cx="32" cy="29" r="14" fill="#E6F3EA"/>
+      <path d="M25 30l5 5 10-13" stroke="#2A8F55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="60" y="27" fill="#322E29" font-family="Fira Sans, Arial, sans-serif" font-size="16" font-weight="700">Pending payments</text>
+      <text x="60" y="45" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="13">$1,240.00 to receive</text>
+    </g>
+  </g>
+  <g transform="translate(112 506)">
+    <rect width="138" height="52" rx="12" fill="#FFFFFF" stroke="#DED8CA"/>
+    <text x="18" y="23" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="13">Clients</text>
+    <text x="18" y="42" fill="#322E29" font-family="Fira Code, ui-monospace, monospace" font-size="19" font-weight="700">128</text>
+    <rect x="158" width="138" height="52" rx="12" fill="#FFFFFF" stroke="#DED8CA"/>
+    <text x="176" y="23" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="13">Filaments</text>
+    <text x="176" y="42" fill="#322E29" font-family="Fira Code, ui-monospace, monospace" font-size="19" font-weight="700">42</text>
+    <rect x="316" width="138" height="52" rx="12" fill="#FFFFFF" stroke="#DED8CA"/>
+    <text x="334" y="23" fill="#746C60" font-family="Fira Sans, Arial, sans-serif" font-size="13">Orders</text>
+    <text x="334" y="42" fill="#322E29" font-family="Fira Code, ui-monospace, monospace" font-size="19" font-weight="700">19</text>
+  </g>
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0v28" stroke="#DED8CA" stroke-width="1"/>
+    </pattern>
+  </defs>
+</svg>

@@ -9,20 +9,25 @@ import {
   LayoutGrid,
   ListOrdered,
 } from "lucide-react";
+import { t, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const items = [
-  { href: "/dashboard", label: "Início", icon: LayoutGrid },
-  // "Estoque" reaproveita a tela de filamentos (lista com total de rolos por
-  // filamento e alerta de estoque baixo) — não há rota /estoque separada.
-  { href: "/cadastros/filamentos", label: "Estoque", icon: Boxes },
-  { href: "/pedidos", label: "Pedidos", icon: ClipboardList },
-  { href: "/fila", label: "Fila", icon: ListOrdered },
-  { href: "/cadastros", label: "Cadastros", icon: FolderCog },
-];
+function navItems(locale: Locale) {
+  const labels = t[locale].nav;
+  return [
+    { href: "/dashboard", label: labels.dashboard, icon: LayoutGrid },
+    // "Estoque" reaproveita a tela de filamentos (lista com total de rolos por
+    // filamento e alerta de estoque baixo) — não há rota /estoque separada.
+    { href: "/cadastros/filamentos", label: labels.stock, icon: Boxes },
+    { href: "/pedidos", label: labels.orders, icon: ClipboardList },
+    { href: "/fila", label: labels.queue, icon: ListOrdered },
+    { href: "/cadastros", label: labels.records, icon: FolderCog },
+  ];
+}
 
-export function BottomNav() {
+export function BottomNav({ locale }: { locale: Locale }) {
   const pathname = usePathname();
+  const items = navItems(locale);
   // Item ativo = o de prefixo mais específico (mais longo) que casa com a rota.
   // Sem isso, /cadastros/filamentos acenderia "Estoque" e "Cadastros" ao mesmo
   // tempo, já que ambos são prefixos do caminho.

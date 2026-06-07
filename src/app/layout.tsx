@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fira_Sans, Fira_Code } from "next/font/google";
+import { getCurrentLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n";
 import "./globals.css";
 
 const firaSans = Fira_Sans({
@@ -14,11 +16,10 @@ const firaCode = Fira_Code({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "3D Print · Gestão",
-  description:
-    "Sistema interno de gestão de impressão 3D — clientes, estoque de filamento e produção.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getCurrentLocale();
+  return t[locale].metadata;
+}
 
 // `viewport-fit=cover` é necessário para o iOS expor `env(safe-area-inset-*)`,
 // usado pela bottom nav para não ficar sob a home bar dos iPhones.
@@ -26,14 +27,15 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getCurrentLocale();
   return (
     <html
-      lang="pt-BR"
+      lang={locale}
       className={`${firaSans.variable} ${firaCode.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

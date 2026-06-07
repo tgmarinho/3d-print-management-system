@@ -1,242 +1,243 @@
-# Sistema de Gestão de Impressão 3D — PRD
+# 3D Printing Management System — PRD
 
-> **Altura: produto.** O quê e porquê, pela ótica do usuário. Sem caminhos de
-> arquivo nem snippets de código (envelhecem rápido). Gera um ou mais SPECs em
+> **Altitude: product.** The what and why, from the user's perspective. No file
+> paths or code snippets (they age quickly). Generates one or more SPECs in
 > `docs/specs/`. Skill: `to-prd`.
 
-**Status:** proposta
-**Autor:** Thiago Marinho
-**Data:** 2026-06-04
+**Status:** proposal
+**Author:** Thiago Marinho
+**Date:** 2026-06-04
 
-## Definição do problema
+## Problem statement
 
-A empresa faz **modelagem e impressão 3D sob demanda**: o cliente pede um
-produto, alguém modela, alguém imprime e entrega. Hoje o controle é informal —
-estoque de filamento e andamento dos pedidos vivem em planilha (ou na cabeça das
-sócias), o que gera atrito no dia a dia:
+The company does **on-demand 3D modeling and printing**: a client requests a
+product, someone models it, someone prints it and delivers it. Today the control
+is informal — filament stock and order progress live in a spreadsheet (or in the
+partners' heads), which creates day-to-day friction:
 
-- **Estoque de filamento** (a matéria-prima) só é conhecido perguntando "quanto
-  você tem aí?" de uma pessoa para a outra. Não há uma fonte única e atualizada
-  de quanto há de cada cor, em cada local, nem do que foi comprado e está por
-  chegar.
-- **Pedidos/orçamentos** não têm um lugar comum. Falta visibilidade de quem é o
-  cliente, quem vendeu, quem está modelando, em que status está a produção, se
-  está pago e qual a **ordem da fila** de demanda.
-- Abrir planilha no computador é inconveniente — o trabalho acontece de pé, no
-  celular, abrindo pacotes de filamento e tocando a produção.
+- **Filament stock** (the raw material) is only known by asking "how much do you
+  have over there?" from one person to another. There is no single, up-to-date
+  source of truth for how much there is of each color, in each location, nor for
+  what was purchased and is on its way.
+- **Orders/quotes** have no common place. There is no visibility into who the
+  client is, who sold it, who is modeling it, what the production status is,
+  whether it is paid, and what the **demand queue** order is.
+- Opening a spreadsheet on a computer is inconvenient — the work happens on your
+  feet, on the phone, opening filament packages and running production.
 
-## Solução
+## Solution
 
-Um aplicativo **web, online e multiusuário** (mobile-first) que as pessoas da
-empresa acessam pelo celular e enxergam em **tempo real**. É um **produto
-fechado** para esta empresa (não um SaaS multi-cliente).
+A **web, online, multi-user** application (mobile-first) that the company's
+people access from their phones and see in **real time**. It is a **closed
+product** for this company (not a multi-client SaaS).
 
-É um **sistema de registro interno (back-office)**: reflete o que já está
-acontecendo no negócio, alimentado **apenas pelas pessoas da empresa**. O cliente
-final **não acessa** o sistema — não cadastra a si mesmo nem solicita orçamento
-por ele. As sócias já chegam com os dados em mãos (combinados por WhatsApp,
-presencialmente, etc.) e os **lançam** aqui. "Cliente", "vendedor" e "modelador"
-são **dados de um pedido**, não usuários que fazem login.
+It is an **internal system of record (back-office)**: it reflects what is already
+happening in the business, fed **only by the company's people**. The end client
+**does not access** the system — they do not register themselves nor request
+quotes through it. The partners already arrive with the data in hand (agreed via
+WhatsApp, in person, etc.) and **enter** it here. "Client", "seller" and
+"modeler" are **data on an order**, not users who log in.
 
-Ele cobre dois grandes fluxos do negócio:
+It covers two major business flows:
 
-1. **Controle de estoque de filamento** — saber, a qualquer momento e de qualquer
-   lugar, quanto há de cada filamento por local, e o que está encomendado. A
-   atualização é de um toque: abriu um pacote, ajusta o número, salva, e todos
-   veem na hora.
+1. **Filament stock control** — knowing, at any moment and from anywhere, how
+   much there is of each filament per location, and what is on order. Updating is
+   one tap: you open a package, adjust the number, save, and everyone sees it
+   instantly.
 
-2. **Gestão da demanda (orçamentos → produção)** — cada pedido vira um registro
-   com cliente, vendedor, modelador, produto, valor, status de produção,
-   situação de pagamento e **posição na fila** (priorizável arrastando).
+2. **Demand management (quotes → production)** — each order becomes a record with
+   client, seller, modeler, product, amount, production status, payment status
+   and **queue position** (prioritizable by dragging).
 
-Um **dashboard visual** resume o estado do negócio: estoque baixo, fila atual,
-produção em andamento e pagamentos pendentes.
+A **visual dashboard** summarizes the state of the business: low stock, current
+queue, production in progress and pending payments.
 
-## Histórias de usuário
+## User stories
 
-**Autenticação e pessoas**
+**Authentication and people**
 
-1. Como usuário da empresa, quero me cadastrar e fazer login, para que apenas
-   pessoas autorizadas acessem o sistema.
-2. Como administrador, quero gerenciar (CRUD) os usuários do sistema, para que eu
-   controle quem tem acesso.
+1. As a company user, I want to register and log in, so that only authorized
+   people access the system.
+2. As an administrator, I want to manage (CRUD) the system's users, so that I
+   control who has access.
 
-**Cadastro de clientes**
+**Client registry**
 
-3. Como administrador, quero cadastrar um cliente, para que eu possa vincular
-   pedidos a ele.
-4. Como usuário, quero listar, buscar, editar e remover clientes, para que o
-   cadastro fique sempre atualizado.
+3. As an administrator, I want to register a client, so that I can link orders to
+   them.
+4. As a user, I want to list, search, edit and remove clients, so that the
+   registry stays up to date.
 
-**Cadastro de vendedores e modeladores**
+**Seller and modeler registry**
 
-5. Como administrador, quero cadastrar vendedores, para que eu saiba quem
-   converteu cada venda.
-6. Como administrador, quero cadastrar modeladores, para que eu saiba quem é
-   responsável pela modelagem de cada pedido.
-7. Como usuário, quero listar/editar/remover vendedores e modeladores, para
-   manter os cadastros corretos.
+5. As an administrator, I want to register sellers, so that I know who converted
+   each sale.
+6. As an administrator, I want to register modelers, so that I know who is
+   responsible for the modeling of each order.
+7. As a user, I want to list/edit/remove sellers and modelers, to keep the
+   registries correct.
 
-**Cadastro de produtos**
+**Product registry**
 
-8. Como usuário, quero registrar o produto que o cliente pediu, para que o pedido
-   descreva o que será modelado e impresso.
-9. Como usuário, quero reaproveitar produtos recorrentes de um catálogo (o mesmo
-   produto pode ser usado em pedidos de clientes diferentes), para não redigitar
-   itens que se repetem.
+8. As a user, I want to record the product the client ordered, so that the order
+   describes what will be modeled and printed.
+9. As a user, I want to reuse recurring products from a catalog (the same product
+   can be used in orders from different clients), so I don't re-type items that
+   repeat.
 
-**Estoque de filamentos**
+**Filament stock**
 
-10. Como usuário, quero cadastrar um filamento com cor, material, marca e peso,
-    para identificar a matéria-prima que tenho.
-11. Como usuário, quero registrar a quantidade em estoque por local, para saber
-    quanto há em cada lugar.
-12. Como usuário, quero registrar a quantidade encomendada/a chegar, para saber o
-    que já foi comprado e está a caminho.
-13. Como usuário, quero aumentar/diminuir a quantidade de um filamento com um
-    toque, para atualizar o estoque rapidamente ao abrir ou usar um pacote.
-14. Como usuário, quero cadastrar e gerenciar os locais de estoque, para refletir
-    onde o material fica guardado.
-15. Como usuária no celular, quero que a outra pessoa veja minha atualização de
-    estoque em tempo real, para que ninguém trabalhe com número desatualizado.
-16. Como usuário, quero ver quais filamentos estão com estoque baixo, para
-    comprar antes de faltar.
+10. As a user, I want to register a filament with color, material, brand and
+    weight, to identify the raw material I have.
+11. As a user, I want to record the quantity in stock per location, to know how
+    much there is in each place.
+12. As a user, I want to record the quantity on order/incoming, to know what has
+    already been purchased and is on its way.
+13. As a user, I want to increase/decrease the quantity of a filament with one
+    tap, to update stock quickly when opening or using a package.
+14. As a user, I want to register and manage the stock locations, to reflect where
+    the material is stored.
+15. As a user on the phone, I want the other person to see my stock update in real
+    time, so that nobody works with an outdated number.
+16. As a user, I want to see which filaments are low on stock, to buy before
+    running out.
 
-**Orçamentos / pedidos**
+**Quotes / orders**
 
-17. Como administrador, quero criar um orçamento vinculando cliente, vendedor,
-    modelador e produto (com a quantidade pedida), para registrar a demanda.
-18. Como administrador, quero informar o valor do orçamento, para acompanhar o
-    faturamento.
-19. Como usuário, quero registrar a situação de pagamento (pago / a pagar), para
-    saber o que ainda preciso receber.
-20. Como usuário, quero listar, buscar, editar e remover orçamentos, para manter a
-    operação organizada.
+17. As an administrator, I want to create a quote linking client, seller, modeler
+    and product (with the quantity ordered), to record the demand.
+18. As an administrator, I want to enter the quote amount, to track revenue.
+19. As a user, I want to record the payment status (paid / unpaid), to know what I
+    still need to collect.
+20. As a user, I want to list, search, edit and remove quotes, to keep the
+    operation organized.
 
-**Produção**
+**Production**
 
-21. Como administrador, quero definir o status de produção de cada pedido (em
-    espera / produzindo / concluído), para acompanhar o andamento.
-22. Como usuário, quero ver todos os pedidos em produção, para saber o que está em
-    andamento agora.
+21. As an administrator, I want to set the production status of each order
+    (waiting / producing / done), to track progress.
+22. As a user, I want to see all orders in production, to know what is in progress
+    right now.
 
-**Fila de demanda**
+**Demand queue**
 
-23. Como administrador, quero ordenar a fila de demanda (1º, 2º, 3º...), para
-    definir a prioridade de produção.
-24. Como administrador, quero mover um pedido para a frente ou para o fim da
-    fila, para atender urgências ou despriorizar pedidos.
+23. As an administrator, I want to order the demand queue (1st, 2nd, 3rd...), to
+    define production priority.
+24. As an administrator, I want to move an order to the front or to the end of the
+    queue, to handle urgencies or deprioritize orders.
 
-**Pagamento**
+**Payment**
 
-25. Como usuário, quero marcar um pedido como pago, para controlar o fluxo
-    financeiro.
-26. Como usuário, quero ver os pedidos com pagamento pendente, para cobrar.
-
-**Dashboard**
-
-27. Como administrador, quero um dashboard visual com estoque baixo, fila atual,
-    produção em andamento e pagamentos pendentes, para ter uma visão geral do
-    negócio de relance.
-
-**Log de auditoria**
-
-28. Como administrador, quero que toda ação importante (cadastros, mudança de
-    status, prioridade, estoque e pagamento) seja registrada com autor e data,
-    para ter histórico e rastreabilidade.
-29. Como administrador, quero consultar o histórico de ações, para entender o que
-    mudou, quando e por quem.
-
-## Decisões de produto
-
-**Natureza do produto**
-- Produto fechado (single-tenant) para uma empresa. Sem multi-tenant, planos ou
-  cobrança.
-- Web, mobile-first, com atualização em tempo real entre usuários.
-
-**Autenticação e usuários**
-- Cadastro/login normais de pessoas via **Supabase Auth**. CRUD de usuários.
-- **Usuários do sistema são só as pessoas da empresa** (~3, as sócias/donos). O
-  cliente final, o vendedor e o modelador **não são usuários** — não acessam nem
-  fazem login; são apenas **dados** de um pedido.
-- **Sem distinção de papéis (sem RBAC).** Todos os usuários têm perfil de
-  **administrador** e **acesso total** — qualquer um cadastra clientes,
-  vendedores, modeladores, produtos e filamentos, muda status de produção,
-  reordena a fila, marca pagamento, etc. A simplicidade é proposital.
-
-**Log de auditoria**
-- **Toda ação importante fica registrada** (quem fez, o quê e quando): criação/
-  edição/remoção de cadastros, mudança de status de produção, mudança de
-  prioridade na fila, movimentação de estoque e alteração de pagamento. Serve de
-  histórico e rastreabilidade. (Substitui a ideia de um "histórico de estoque"
-  isolado — vira um log único de ações do sistema.)
-
-**Módulos (conceituais)**
-- Cadastros: Clientes, Vendedores, Modeladores, Produtos, Filamentos, Locais de
-  estoque.
-- Operação: Orçamentos, Produção (status), Fila de demanda, Estoque, Pagamento.
-- Visão: Dashboard.
-
-**Campos dos cadastros de pessoas**
-- **Cliente**: nome (obrigatório), empresa (opcional), celular (opcional),
-  email (opcional).
-- **Vendedor**: nome (obrigatório), celular (opcional), email (opcional).
-- **Modelador**: nome (obrigatório), celular (opcional), email (opcional).
-
-**Filamento**
-- Campos: cor, material, marca, peso. **`cor` e `material` são obrigatórios**;
-  `marca` e `peso` são opcionais.
-- Estoque medido por **quantidade de rolos** por local.
-- Dois números por filamento/local: **em estoque** e **encomendado/a chegar**.
-- Locais de estoque são **cadastráveis** (começa com os locais reais e dá para
-  criar mais).
-- **Estoque baixo é configurável**: cada filamento tem um limite mínimo definido
-  pelo usuário; abaixo dele, entra nos alertas do dashboard.
-
-**Produto**
-- **Catálogo reutilizável** de produtos recorrentes — o mesmo produto pode ser
-  usado em pedidos de **clientes diferentes** (não pertence a um cliente).
-- Também é possível descrever um produto novo direto no pedido.
-
-**Orçamento / pedido**
-- Vincula cliente, vendedor, modelador e produto, com a **quantidade** do produto
-  pedido.
-- Tem **valor** (R$) e **situação de pagamento** (pago / a pagar).
-- Tem **status de produção**: em espera / produzindo / concluído.
-- Tem **posição na fila**, reordenável.
+25. As a user, I want to mark an order as paid, to control the financial flow.
+26. As a user, I want to see orders with pending payment, to follow up on
+    collection.
 
 **Dashboard**
-- Apenas **visual** por enquanto (sem exportações/relatórios avançados). Mostra
-  estoque baixo, fila atual, produção em andamento e pagamentos pendentes.
 
-**Fora de escopo (agora)**
-- **Portal / autoatendimento do cliente final** — o cliente não acessa o sistema,
-  não se cadastra nem pede orçamento por ele. É registro interno da empresa.
-- Cálculo automático do custo de filamento no orçamento (o cliente considerou
-  irrelevante).
-- Baixa automática de estoque ao imprimir (estoque é atualizado manualmente no
-  MVP; integração estoque↔produção fica para a v2).
-- Parcelamento/split de pagamento, emissão fiscal.
-- App mobile nativo (a web mobile-first atende).
-- Notificações por push/e-mail (alerta de estoque baixo só no dashboard).
+27. As an administrator, I want a visual dashboard with low stock, current queue,
+    production in progress and pending payments, to have an at-a-glance overview
+    of the business.
 
-## Métricas de sucesso
+**Audit log**
 
-- As sócias param de perguntar "quanto tem aí?" — o estoque no sistema é a fonte
-  de verdade e fica atualizado.
-- Todo pedido em andamento existe no sistema com status e posição na fila claros.
-- É possível, em um relance no celular, saber o que comprar, o que produzir e o
-  que cobrar.
-- O sistema substitui a planilha no uso diário.
+28. As an administrator, I want every important action (registrations, status
+    changes, priority, stock and payment) to be recorded with author and date, to
+    have history and traceability.
+29. As an administrator, I want to query the action history, to understand what
+    changed, when and by whom.
 
-## Questões em aberto
+## Product decisions
 
-- [x] **Produto**: catálogo **reutilizável** de produtos recorrentes (além de
-      poder descrever itens novos por pedido). Confirmado pelo cliente.
-- [x] **Papéis/permissões**: sem RBAC (Role-Based Access Control). ~3 usuários, todos administradores com
-      acesso total a todas as ações. Simplicidade proposital.
-- [x] **Histórico**: log de auditoria único registrando toda ação importante
-      (quem, o quê, quando). Entra no escopo.
-- [x] **Filamento**: `cor` e `material` obrigatórios; `marca` e `peso` opcionais.
-- [x] **Estoque baixo**: limite **configurável** por filamento (definido pelo
-      usuário); abaixo dele, entra nos alertas do dashboard.
+**Nature of the product**
+- Closed product (single-tenant) for one company. No multi-tenant, plans or
+  billing.
+- Web, mobile-first, with real-time updates between users.
+
+**Authentication and users**
+- Normal user registration/login via **Supabase Auth**. User CRUD.
+- **System users are only the company's people** (~3, the partners/owners). The
+  end client, the seller and the modeler **are not users** — they neither access
+  nor log in; they are merely **data** on an order.
+- **No role distinction (no RBAC).** All users have an **administrator** profile
+  and **full access** — anyone can register clients, sellers, modelers, products
+  and filaments, change production status, reorder the queue, mark payment, etc.
+  The simplicity is intentional.
+
+**Audit log**
+- **Every important action is recorded** (who did it, what, and when):
+  creation/edition/removal of registrations, production status change, queue
+  priority change, stock movement and payment change. It serves as history and
+  traceability. (It replaces the idea of an isolated "stock history" — it becomes
+  a single log of system actions.)
+
+**Modules (conceptual)**
+- Registries: Clients, Sellers, Modelers, Products, Filaments, Stock locations.
+- Operation: Quotes, Production (status), Demand queue, Stock, Payment.
+- View: Dashboard.
+
+**Fields of the people registries**
+- **Client**: name (required), company (optional), phone (optional), email
+  (optional).
+- **Seller**: name (required), phone (optional), email (optional).
+- **Modeler**: name (required), phone (optional), email (optional).
+
+**Filament**
+- Fields: color, material, brand, weight. **`color` and `material` are
+  required**; `brand` and `weight` are optional.
+- Stock measured by **number of rolls** per location.
+- Two numbers per filament/location: **in stock** and **on order/incoming**.
+- Stock locations are **registrable** (it starts with the real locations and you
+  can create more).
+- **Low stock is configurable**: each filament has a minimum threshold defined by
+  the user; below it, it enters the dashboard alerts.
+
+**Product**
+- **Reusable catalog** of recurring products — the same product can be used in
+  orders from **different clients** (it does not belong to a client).
+- It is also possible to describe a new product directly on the order.
+
+**Quote / order**
+- Links client, seller, modeler and product, with the **quantity** of the product
+  ordered.
+- Has an **amount** (R$) and a **payment status** (paid / unpaid).
+- Has a **production status**: waiting / producing / done.
+- Has a **queue position**, reorderable.
+
+**Dashboard**
+- **Visual only** for now (no advanced exports/reports). Shows low stock, current
+  queue, production in progress and pending payments.
+
+**Out of scope (for now)**
+- **End-client portal / self-service** — the client does not access the system,
+  does not register or request a quote through it. It is the company's internal
+  record.
+- Automatic calculation of filament cost on the quote (the client considered it
+  irrelevant).
+- Automatic stock deduction when printing (stock is updated manually in the MVP;
+  stock↔production integration is left for v2).
+- Payment installments/split, tax invoicing.
+- Native mobile app (the mobile-first web suffices).
+- Push/email notifications (low-stock alert only on the dashboard).
+
+## Success metrics
+
+- The partners stop asking "how much is over there?" — the stock in the system is
+  the source of truth and stays up to date.
+- Every order in progress exists in the system with a clear status and queue
+  position.
+- It is possible, at a glance on the phone, to know what to buy, what to produce
+  and what to collect.
+- The system replaces the spreadsheet in daily use.
+
+## Open questions
+
+- [x] **Product**: **reusable** catalog of recurring products (in addition to
+      being able to describe new items per order). Confirmed by the client.
+- [x] **Roles/permissions**: no RBAC (Role-Based Access Control). ~3 users, all
+      administrators with full access to all actions. Intentional simplicity.
+- [x] **History**: single audit log recording every important action (who, what,
+      when). In scope.
+- [x] **Filament**: `color` and `material` required; `brand` and `weight`
+      optional.
+- [x] **Low stock**: **configurable** threshold per filament (defined by the
+      user); below it, it enters the dashboard alerts.

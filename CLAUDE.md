@@ -1,88 +1,92 @@
 # CLAUDE.md
 
-Guia para o **Claude Code** trabalhar neste repositório. As convenções gerais
-(válidas para qualquer agente) estão em [`AGENTS.md`](./AGENTS.md); este arquivo
-traz apenas o que é específico do Claude Code. A visão geral do produto está no
+Guide for **Claude Code** working in this repository. The general conventions
+(valid for any agent) live in [`AGENTS.md`](./AGENTS.md); this file covers only
+what is specific to Claude Code. The product overview is in the
 [`README.md`](./README.md).
 
-## Projeto
+## Project
 
-**3D Print SaaS Management System** — gestão de **clientes**, **estoque de
-filamento** e **produção** para uma operação de impressão 3D sob demanda. É um
-**produto fechado (single-tenant)**, sistema de registro interno: só as pessoas
-do negócio acessam, todas como administradores; o cliente final não acessa.
-Escopo completo no [PRD](./docs/prd/001-gestao-impressao-3d.md).
+**3D Print Management System** — management of **clients**, **filament stock**,
+and **production** for an on-demand 3D printing operation. It is a **closed,
+single-tenant product**, an internal system of record: only the business owners
+use it, all as administrators; the end customer never logs in. Full scope in the
+[PRD](./docs/prd/001-gestao-impressao-3d.md).
 
 Stack: **Next.js 16 (App Router) + React 19 + TypeScript**, **Supabase/PostgreSQL**
-(Auth + RLS + Realtime), **Tailwind v4** + componentes shadcn (sobre `@base-ui/react`)
-e ícones `lucide-react`, deploy na **Vercel**, **web mobile-first** (sem app nativo).
-Package manager e runtime: **Bun**.
+(Auth + RLS + Realtime), **Tailwind v4** + shadcn components (on `@base-ui/react`)
+and `lucide-react` icons, deployed on **Vercel**, **mobile-first web** (no native
+app). Package manager and runtime: **Bun**.
 
-## Arquitetura
+## Architecture
 
-- **Rotas** em `src/app`:
-  - `page.tsx` — landing pública (`/`) com a visão do produto e botão de login.
+- **Routes** in `src/app`:
+  - `page.tsx` — public landing (`/`) with the product vision and a sign-in button.
   - `(auth)/login` — sign in / sign up via Supabase Auth (Server Actions).
-  - `(app)/*` — área autenticada (o `layout.tsx` redireciona para `/login` sem
-    usuário): `dashboard`, `pedidos`, `fila` (drag-and-drop com `@dnd-kit`),
-    `cadastros` (clientes, produtos, filamentos, locais, usuários) e `auditoria`.
-- **Domínio** em `src/lib/*.ts` (ex.: `orders.ts`, `filaments.ts`, `clients.ts`,
-  `queue.ts`, `audit.ts`) — cada um com `*.test.ts` ao lado.
-- **Supabase** em `src/lib/supabase/`: `server.ts` (RSC/Server Actions),
-  `client.ts` (browser), `middleware.ts` (refresh de sessão), `admin.ts`
-  (service role — só servidor), `realtime.ts`.
-- **Mutações** via **Server Actions** (`actions.ts` por rota); UI atualiza em
-  tempo real via Realtime (`realtime-refresh.tsx`).
-- **Schema** em `supabase/migrations/` (tabelas, RLS, índices, Realtime).
+  - `(app)/*` — authenticated area (the `layout.tsx` redirects to `/login` when
+    there is no user): `dashboard`, `pedidos` (orders), `fila` (drag-and-drop
+    queue with `@dnd-kit`), `cadastros` (clients, products, filaments, locations,
+    users), and `auditoria` (audit log).
+- **Domain** in `src/lib/*.ts` (e.g. `orders.ts`, `filaments.ts`, `clients.ts`,
+  `queue.ts`, `audit.ts`) — each with a `*.test.ts` alongside it.
+- **Supabase** in `src/lib/supabase/`: `server.ts` (RSC/Server Actions),
+  `client.ts` (browser), `middleware.ts` (session refresh), `admin.ts`
+  (service role — server only), `realtime.ts`.
+- **Mutations** via **Server Actions** (`actions.ts` per route); the UI updates
+  in real time via Realtime (`realtime-refresh.tsx`).
+- **Schema** in `supabase/migrations/` (tables, RLS, indexes, Realtime).
 
-## Comandos
+See [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) for the full write-up.
+
+## Commands
 
 ```bash
-bun install     # instalar dependências
-bun run dev     # ambiente de desenvolvimento (http://localhost:3000)
-bun run build   # build de produção
-bun test        # testes (bun test)
-bunx tsc --noEmit  # typecheck (não há script de lint dedicado)
+bun install         # install dependencies
+bun run dev         # development server (http://localhost:3000)
+bun run build       # production build
+bun test            # tests (bun test)
+bunx tsc --noEmit   # typecheck (there is no dedicated lint script)
 ```
 
-> Use **Bun** como package manager e runtime — não use `npm`/`yarn`/`pnpm`. O
-> lockfile é o `bun.lock`. Os scripts reais estão no `package.json`
-> (`dev`/`build`/`start`/`test`); não há `lint` — use `tsc --noEmit`.
+> Use **Bun** as the package manager and runtime — do not use `npm`/`yarn`/`pnpm`.
+> The lockfile is `bun.lock`. The real scripts live in `package.json`
+> (`dev`/`build`/`start`/`test`); there is no `lint` — use `tsc --noEmit`.
 
-## Fluxo de trabalho esperado
+## Expected workflow
 
-1. **Planeje** tarefas multi-etapas antes de codar.
-2. **TDD**: teste primeiro, depois implementação.
-3. **Verifique** com build/lint/testes e confirme o comportamento real.
-4. **Debugging sistemático**: causa raiz antes da correção.
-5. Trabalhe em **branch**; PRs têm como base `main`. Commit/push só quando
-   solicitado.
+1. **Plan** multi-step tasks before coding.
+2. **TDD**: test first, then implementation.
+3. **Verify** with build/typecheck/tests and confirm the real behavior.
+4. **Systematic debugging**: find the root cause before fixing.
+5. Work on a **branch**; PRs target `main`. Commit/push only when asked.
 
 ## Skills
 
-Há skills locais em `.agents/skills/` (lockfile em `skills-lock.json`) além das
-skills do harness. Use-as quando aplicável — por exemplo `test-driven-development`,
-`systematic-debugging`, `supabase-postgres-best-practices`,
-`vercel-react-best-practices`, `deploy-to-vercel` e `ui-ux-pro-max` (design de
-UI/UX; os scripts de busca por domínio precisam de Python 3). Leia o `SKILL.md`
-antes de aplicar.
+There are local skills in `.agents/skills/` (lockfile in `skills-lock.json`) in
+addition to the harness skills. Use them when applicable — for example
+`test-driven-development`, `systematic-debugging`,
+`supabase-postgres-best-practices`, `vercel-react-best-practices`,
+`deploy-to-vercel`, and `ui-ux-pro-max` (UI/UX design; the per-domain search
+scripts require Python 3). Read the `SKILL.md` before applying.
 
-## Convenções específicas
+## Specific conventions
 
-- **TypeScript estrito**; evite `any`.
-- **Formulários: React Hook Form + Zod** (`@hookform/resolvers`) onde fizer
-  sentido — todo form com validação/estado/submit não-trivial. O schema Zod é a
-  fonte de verdade (`z.infer` para o tipo); se o submit for Server Action,
-  **revalide com o mesmo schema no servidor**. Inputs triviais não precisam do
-  setup. Selects avançados → `react-select`; selects simples → `Select` do shadcn.
-  Exemplo canônico em [`docs/conventions/forms.md`](./docs/conventions/forms.md).
-- Espelhe o estilo do código vizinho (nomes, idioma, comentários).
-- **Segredos**: use `.env.local`; nunca faça commit de chaves. Service keys do
-  Supabase só no servidor.
-- **`.context/`** é a área de colaboração entre agentes (gitignored) — use para
-  notas/todos compartilhados.
+- **Strict TypeScript**; avoid `any`.
+- **Forms: React Hook Form + Zod** (`@hookform/resolvers`) where it makes sense —
+  any form with non-trivial validation/state/submit. The Zod schema is the source
+  of truth (`z.infer` for the type); if the submit is a Server Action,
+  **re-validate with the same schema on the server**. Trivial inputs don't need
+  the setup. Advanced selects → `react-select`; simple selects → shadcn's
+  `Select`. Canonical example in [`docs/conventions/forms.md`](./docs/conventions/forms.md).
+- Mirror the style of surrounding code (names, language, comments).
+- **Secrets**: use `.env.local`; never commit keys. Supabase service keys stay on
+  the server.
+- **`.context/`** is the agent collaboration area (gitignored) — use it for
+  shared notes/todos.
 
-## Idioma
+## Language
 
-Responda ao mantenedor em **português brasileiro** com acentuação correta.
-Mantenha identificadores e termos técnicos em inglês.
+The application UI is in **Portuguese (pt-BR)** for a Brazilian business, so route
+folder names and user-facing strings are in Portuguese. Code identifiers, comments,
+and documentation are in **English**. When replying to the maintainer, match the
+language they write in.

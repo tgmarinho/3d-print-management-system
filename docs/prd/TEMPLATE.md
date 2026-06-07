@@ -1,38 +1,38 @@
-# [Nome da Feature] — PRD
+# [Feature Name] — PRD
 
-> **Altura: produto.** O quê e porquê, pela ótica do usuário. Sem caminhos de
-> arquivo nem snippets de código (envelhecem rápido). Gera um ou mais SPECs em
+> **Altitude: product.** The what and why, from the user's perspective. No file
+> paths or code snippets (they age fast). Produces one or more SPECs in
 > `docs/specs/`. Skill: `to-prd`.
 
-**Status:** rascunho | aprovado
-**Autor:**
-**Data:** YYYY-MM-DD
+**Status:** draft | approved
+**Author:**
+**Date:** YYYY-MM-DD
 
 ## Problem Statement
 
-O problema que o usuário enfrenta, pela ótica dele.
+The problem the user faces, from their perspective.
 
-## Solução
+## Solution
 
-A solução, pela ótica do usuário.
+The solution, from the user's perspective.
 
 ## User Stories
 
-Lista numerada e extensa. Formato:
+Numbered, extensive list. Format:
 
-1. Como `<ator>`, quero `<feature>`, para que `<benefício>`.
+1. As a `<role>`, I want `<feature>`, so that `<benefit>`.
 
-## Decisões de produto
+## Product Decisions
 
-- Módulos a construir/modificar (em nível conceitual)
-- Contratos de API / mudanças de schema (em nível de decisão)
-- Esclarecimentos e restrições do mantenedor
-- Fora de escopo (o que **não** entra agora)
+- Modules to build/modify (at a conceptual level)
+- API contracts / schema changes (at a decision level)
+- Maintainer clarifications and constraints
+- Out of scope (what does **not** ship now)
 
-## Métricas de sucesso
+## Success Metrics
 
-Como saberemos que resolveu o problema.
+How we'll know the problem is solved.
 
-## Questões em aberto
+## Open Questions
 
 - [ ]

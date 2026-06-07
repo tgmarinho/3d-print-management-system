@@ -1,102 +1,99 @@
 # AGENTS.md
 
-Convenções para agentes de IA (Claude Code, Codex, Copilot, Gemini etc.)
-trabalhando neste repositório. Para orientações específicas do Claude Code, veja
-também [`CLAUDE.md`](./CLAUDE.md).
+Conventions for AI agents (Claude Code, Codex, Copilot, Gemini, etc.) working in
+this repository. For Claude Code–specific guidance, see also
+[`CLAUDE.md`](./CLAUDE.md).
 
-## Sobre o projeto
+## About the project
 
-**3D Print SaaS Management System** — gestão para uma operação de modelagem e
-impressão 3D sob demanda, cobrindo **clientes**, **estoque de filamento** e
-**produção** (orçamentos, fila de demanda, status). Consulte o
-[`README.md`](./README.md) para a visão geral e o
-[PRD](./docs/prd/001-gestao-impressao-3d.md) para o escopo completo.
+**3D Print Management System** — management for an on-demand 3D modeling and
+printing operation, covering **clients**, **filament stock**, and **production**
+(quotes, demand queue, statuses). See the [`README.md`](./README.md) for the
+overview and the [PRD](./docs/prd/001-gestao-impressao-3d.md) for the full scope.
 
-> **Produto fechado (single-tenant)** para uma empresa — não é um SaaS
-> multi-tenant (apesar do nome). É um **sistema de registro interno**: só as ~3
-> pessoas do negócio acessam, todas como administradores (sem RBAC); o cliente
-> final não acessa. Cliente, vendedor e modelador são **dados**, não usuários.
+> **Closed, single-tenant product** for one company — not a multi-tenant SaaS
+> (despite the name). It is an **internal system of record**: only the ~3 business
+> owners use it, all as administrators (no RBAC); the end customer never logs in.
+> Client, seller, and modeler are **data**, not users.
 
-> O repositório está em estágio inicial: ainda não há código de aplicação. Ao
-> introduzir o app, atualize este arquivo e o README com os comandos reais.
+## Stack
 
-## Stack-alvo
-
-- **Next.js (App Router)** + React + **TypeScript**
-- **Supabase / PostgreSQL** para dados, autenticação e tempo real (Realtime)
-- Deploy na **Vercel**
-- **Web mobile-first** — app nativo (React Native/Expo) está **fora de escopo**;
-  a web mobile-first atende
-- **Bun** como package manager e runtime (use `bun`, não `npm`/`yarn`/`pnpm`;
+- **Next.js 16 (App Router)** + React 19 + **TypeScript** (strict)
+- **Supabase / PostgreSQL** for data, authentication, and Realtime
+- **Tailwind CSS v4** + shadcn components (on `@base-ui/react`) + `lucide-react`
+- Deployed on **Vercel**
+- **Mobile-first web** — a native app (React Native/Expo) is **out of scope**;
+  mobile-first web is enough
+- **Bun** as package manager and runtime (use `bun`, not `npm`/`yarn`/`pnpm`;
   lockfile `bun.lock`)
 
-## Princípios de trabalho
+## Working principles
 
-1. **TDD** — escreva o teste antes do código de produção. Não marque uma tarefa
-   como concluída sem testes passando.
-2. **Verifique antes de concluir** — rode build, lint e testes; confirme o
-   comportamento real, não apenas que o código compila.
-3. **Debugging sistemático** — encontre a causa raiz antes de corrigir; não
-   aplique correções superficiais.
-4. **Planeje antes de mudanças grandes** — para tarefas multi-etapas, esboce um
-   plano antes de implementar.
-5. **Mudanças pequenas e revisáveis** — prefira PRs focados.
+1. **TDD** — write the test before production code. Don't mark a task done
+   without passing tests.
+2. **Verify before completing** — run build, typecheck, and tests; confirm the
+   real behavior, not just that the code compiles.
+3. **Systematic debugging** — find the root cause before fixing; no superficial
+   patches.
+4. **Plan before large changes** — for multi-step tasks, outline a plan before
+   implementing.
+5. **Small, reviewable changes** — prefer focused PRs.
 
 ## PRD & SPEC
 
-Trabalho não-trivial passa por dois documentos, em alturas diferentes:
+Non-trivial work goes through two documents, at different altitudes:
 
-- **PRD** (produto) — *o quê* e *porquê*. Problem statement, solução pela ótica
-  do usuário, user stories, decisões de produto. **Sem** caminhos de arquivo nem
-  snippets. Estável; muda raramente. Vive em `docs/prd/`. Skill: `to-prd`.
-- **SPEC** (técnico, para agentes) — *como*. Arquivos a tocar, interfaces,
-  schema, e tarefas TDD bite-sized (2–5 min) prontas para um agente implementar.
-  Volátil; descartável após o merge. Vive em `docs/specs/`. Skill: `writing-plans`.
+- **PRD** (product) — *what* and *why*. Problem statement, the solution from the
+  user's perspective, user stories, product decisions. **No** file paths or
+  snippets. Stable; rarely changes. Lives in `docs/prd/`. Skill: `to-prd`.
+- **SPEC** (technical, for agents) — *how*. Files to touch, interfaces, schema,
+  and bite-sized TDD tasks (2–5 min) ready for an agent to implement. Volatile;
+  disposable after merge. Lives in `docs/specs/`. Skill: `writing-plans`.
 
-Fluxo: `PRD → (fatiar em issues) → SPEC → executar`. Um PRD pode gerar vários
-SPECs (um por subsistema). Cada SPEC deve produzir software funcional e testável
-por si só.
+Flow: `PRD → (slice into issues) → SPEC → execute`. One PRD can produce several
+SPECs (one per subsystem). Each SPEC should produce working, testable software on
+its own.
 
-Nomeie os PRDs com numeração sequencial — `NNN-<feature>.md` (o primeiro é
+Name PRDs with sequential numbering — `NNN-<feature>.md` (the first is
 [`docs/prd/001-gestao-impressao-3d.md`](./docs/prd/001-gestao-impressao-3d.md)).
-Use os templates em `docs/prd/TEMPLATE.md` e `docs/specs/TEMPLATE.md`. Uma versão
-HTML do PRD (para apresentar ao cliente) pode acompanhar o `.md`.
+Use the templates in `docs/prd/TEMPLATE.md` and `docs/specs/TEMPLATE.md`. An HTML
+version of the PRD (to present to the client) may accompany the `.md`.
 
-Regra rápida: alinhar **escopo/valor** com stakeholder → PRD; já sei o quê,
-quero **passo-a-passo de código** → SPEC.
+Quick rule: align **scope/value** with a stakeholder → PRD; I already know the
+*what* and want **step-by-step code** → SPEC.
 
-## Convenções de código
+## Code conventions
 
-- **Linguagem:** TypeScript em modo estrito; evite `any`.
-- **Componentes:** siga padrões de composição do React (children em vez de
-  render props, evite props booleanas excessivas, sem `forwardRef` no React 19).
-- **Formulários:** use **React Hook Form + Zod** (via `@hookform/resolvers`) onde
-  fizer sentido — qualquer formulário com validação, estado ou submit não-trivial.
-  O schema Zod é a fonte de verdade da validação (use `z.infer` para o tipo) e,
-  quando o submit é uma Server Action, **revalide no servidor com o mesmo schema**
-  — nunca confie só na validação do client. Para campos `<input>` simples, sem
-  validação, não force o setup. Para selects avançados (busca/async/multi),
-  combine com `react-select`; para selects simples, o `Select` do shadcn basta.
-  Exemplo canônico (schema → action → form) em
+- **Language:** TypeScript in strict mode; avoid `any`.
+- **Components:** follow React composition patterns (children instead of render
+  props, avoid excessive boolean props, no `forwardRef` in React 19).
+- **Forms:** use **React Hook Form + Zod** (via `@hookform/resolvers`) where it
+  makes sense — any form with non-trivial validation, state, or submit. The Zod
+  schema is the source of truth for validation (use `z.infer` for the type), and
+  when the submit is a Server Action, **re-validate on the server with the same
+  schema** — never trust client validation alone. For simple `<input>` fields with
+  no validation, don't force the setup. For advanced selects (search/async/multi),
+  combine with `react-select`; for simple selects, shadcn's `Select` is enough.
+  Canonical example (schema → action → form) in
   [`docs/conventions/forms.md`](./docs/conventions/forms.md).
-- **Estilo:** mantenha a consistência com o código existente — espelhe nomes,
-  densidade de comentários e idioma do arquivo ao redor.
-- **Banco:** siga boas práticas de Postgres/Supabase (RLS, índices, pooling de
-  conexões). Nunca exponha service keys no client.
-- **Segredos:** nunca faça commit de `.env`/chaves. Use `.env.local`.
+- **Style:** stay consistent with existing code — mirror names, comment density,
+  and the language of the surrounding file.
+- **Database:** follow Postgres/Supabase best practices (RLS, indexes, connection
+  pooling). Never expose service keys to the client.
+- **Secrets:** never commit `.env`/keys. Use `.env.local`.
 
-## Git e PRs
+## Git and PRs
 
-- Trabalhe em **branches**; nunca faça commit direto na `main`.
-- Branch-alvo para diffs e PRs: `main` (`git diff origin/main...`,
+- Work on **branches**; never commit directly to `main`.
+- Target branch for diffs and PRs: `main` (`git diff origin/main...`,
   `gh pr create --base main`).
-- Faça commit/push apenas quando solicitado.
-- Mensagens de commit claras e no imperativo.
+- Commit/push only when asked.
+- Clear, imperative commit messages.
 
-## Skills disponíveis
+## Available skills
 
-O diretório `.agents/skills/` traz skills reutilizáveis (registradas em
-`skills-lock.json`). Destaques:
+The `.agents/skills/` directory provides reusable skills (registered in
+`skills-lock.json`). Highlights:
 
 - **Superpowers** — `brainstorming`, `writing-plans`, `executing-plans`,
   `subagent-driven-development`, `dispatching-parallel-agents`,
@@ -108,15 +105,17 @@ O diretório `.agents/skills/` traz skills reutilizáveis (registradas em
   `vercel-composition-patterns`, `vercel-react-native-skills`,
   `vercel-react-view-transitions`, `vercel-optimize`, `web-design-guidelines`.
 - **Supabase** — `supabase`, `supabase-postgres-best-practices`.
-- **Matt Pocock** — `to-prd`, `to-issues` (fluxo PRD/SPEC), `caveman` (modo de
-  resposta comprimido).
-- **UI/UX** — `ui-ux-pro-max` (inteligência de design para web/mobile: estilos,
-  paletas, tipografia, regras de UX e charts). Os scripts de busca por domínio
-  (`scripts/search.py --design-system`) exigem **Python 3**.
+- **Matt Pocock** — `to-prd`, `to-issues` (PRD/SPEC flow), `caveman` (compressed
+  response mode).
+- **UI/UX** — `ui-ux-pro-max` (design intelligence for web/mobile: styles,
+  palettes, typography, UX rules, and charts). The per-domain search scripts
+  (`scripts/search.py --design-system`) require **Python 3**.
 
-Consulte o `SKILL.md` correspondente antes de aplicar cada uma.
+Read the corresponding `SKILL.md` before applying each one.
 
-## Idioma
+## Language
 
-Comunique-se com o mantenedor em **português brasileiro** (com acentuação
-correta). Identificadores de código e termos técnicos permanecem em inglês.
+The application UI is in **Portuguese (pt-BR)** for a Brazilian business, so route
+folder names and user-facing strings are in Portuguese. Code identifiers, comments,
+and documentation are in **English**. Communicate with the maintainer in the
+language they write in.

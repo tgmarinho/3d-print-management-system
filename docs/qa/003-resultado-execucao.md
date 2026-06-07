@@ -1,102 +1,104 @@
-# Resultado da execução — QA Mobile (rodada 1)
+# Execution results — Mobile QA (round 1)
 
-Execução do [plano](./001-plano-testes-mobile-responsivo.md) via browser
-automatizado (Chrome) + inspeção de DOM/código, em `http://localhost:3000`.
-Sessão Supabase autenticada; dados de QA presentes. Viewport efetivo dos testes:
+Execution of the [test plan](./001-plano-testes-mobile-responsivo.md) via an
+automated browser (Chrome) + DOM/code inspection, on `http://localhost:3000`.
+Authenticated Supabase session; QA data present. Effective test viewport:
 ~485–500 px (mobile).
 
-> **Nota de ambiente:** o controle de viewport e o dev server ficaram instáveis
-> (resizes oscilando a largura, server reiniciado algumas vezes). A medição de
-> overflow e a validação funcional foram feitas via DOM/JS — confiáveis e
-> independentes do recorte de screenshot. A validação **visual pixel-fiel** em
-> 320/375 px e o **drag-and-drop por toque** ainda devem ser confirmados em
-> aparelho real / DevTools device mode.
+> **Environment note:** the viewport control and the dev server were unstable
+> (resizes oscillating the width, server restarted a few times). The overflow
+> measurement and the functional validation were done via DOM/JS — reliable and
+> independent of the screenshot crop. The **pixel-faithful visual** validation at
+> 320/375 px and the **touch drag-and-drop** still need to be confirmed on a real
+> device / DevTools device mode.
 
-## Telas testadas
+## Screens tested
 
-| Tela | Overflow-X | Bottom nav | Resultado |
+| Screen | Overflow-X | Bottom nav | Result |
 |---|---|---|---|
-| Dashboard | ✅ não | ✅ | OK |
-| Pedidos (lista) | ✅ não | ✅ | OK — filtros, busca e toggle pago funcionam |
-| Pedidos / Novo | ✅ não | ✅ | OK — combobox, quick-create, inputs |
-| Fila | ✅ não | ✅ | OK — reordenar por setas |
-| Cadastros (hub) | ✅ não | ✅ | OK |
-| Clientes (lista) | ✅ não | ✅ | OK — busca server-side |
-| Produtos | ✅ não | ✅ | OK |
-| Filamentos (lista) | ✅ não | ✅ | OK |
-| Filamentos / Editar | ✅ não | ✅ | OK — estoque por local |
-| Locais de estoque | ✅ não | ✅ | OK |
-| **Usuários** | — | — | ❌ **não carrega** (ver ACH-06) |
-| Auditoria | ✅ não | ✅ | OK — layout 1 coluna, filtros |
+| Dashboard | ✅ no | ✅ | OK |
+| Orders (list) | ✅ no | ✅ | OK — filters, search and paid toggle work |
+| Orders / New | ✅ no | ✅ | OK — combobox, quick-create, inputs |
+| Queue | ✅ no | ✅ | OK — reorder via arrows |
+| Records (hub) | ✅ no | ✅ | OK |
+| Clients (list) | ✅ no | ✅ | OK — server-side search |
+| Products | ✅ no | ✅ | OK |
+| Filaments (list) | ✅ no | ✅ | OK |
+| Filaments / Edit | ✅ no | ✅ | OK — per-location stock |
+| Stock locations | ✅ no | ✅ | OK |
+| **Users** | — | — | ❌ **does not load** (see ACH-06) |
+| Audit | ✅ no | ✅ | OK — 1-column layout, filters |
 
-## Fluxos validados (funcionais, com reversão)
-- **Pedidos — filtro de produção:** "Produzindo" filtra corretamente. ✅
-- **Pedidos — toggle pago:** marcar pago atualiza o resumo "A receber"
-  (R$ 630 → R$ 130) e o contador; **revertido** ao estado original. ✅
-- **Novo Pedido — combobox de cliente:** abre, busca ("Cli" → "Cliente Inline
-  QA"), oferece **quick-create** ("Cadastrar 'Cli'") e o **menu não é cortado**
+## Validated flows (functional, with rollback)
+- **Orders — production filter:** "Printing" filters correctly. ✅
+- **Orders — paid toggle:** marking as paid updates the "To receive" summary
+  (R$ 630 → R$ 130) and the counter; **reverted** to the original state. ✅
+- **New Order — client combobox:** opens, searches ("Cli" → "Cliente Inline
+  QA"), offers **quick-create** ("Register 'Cli'") and the **menu is not clipped**
   (`menuClipped:false`). ✅
-- **Novo Pedido — inputs:** `quantity` (inputmode=numeric) e `amount`
-  (inputmode=decimal) → teclado numérico no mobile; selects nativos. ✅
-- **Fila — reordenar:** "mover para o fim" e "mover para o início" funcionam,
-  ranks atualizam, estados `disabled` corretos (1º sem subir, último sem descer);
-  **ordem restaurada**. ✅
-- **Clientes — busca:** `?q=Cleide` filtra server-side para 1 resultado. ✅
-- **Filamento — estoque por local:** "Estoque por local · 8 em estoque" com 3
-  locais e steppers −/+ por local (Em estoque / Encomendado). ✅
-- **Auditoria:** trilha registrou as próprias ações de teste ("Mudou prioridade",
-  "Registrou pagamento to:paid/unpaid"). ✅
+- **New Order — inputs:** `quantity` (inputmode=numeric) and `amount`
+  (inputmode=decimal) → numeric keyboard on mobile; native selects. ✅
+- **Queue — reorder:** "move to bottom" and "move to top" work, ranks update,
+  `disabled` states correct (first cannot move up, last cannot move down);
+  **order restored**. ✅
+- **Clients — search:** `?q=Cleide` filters server-side to 1 result. ✅
+- **Filament — per-location stock:** "Stock per location · 8 in stock" with 3
+  locations and −/+ steppers per location (In stock / Ordered). ✅
+- **Audit:** the trail recorded the test's own actions ("Changed priority",
+  "Recorded payment to:paid/unpaid"). ✅
 
-## Achados
+## Findings
 
-### ACH-01 — Bottom nav presente e funcional ✅ (não é bug)
-Investigado após a observação de "menu ausente no mobile". `<nav fixed bottom-0
-z-20>`, 5 itens, clicáveis (hit-test). O item *Início* aparece coberto pelo
-overlay **`NEXTJS-PORTAL`** (botão "N" do Next dev) — **some no build de
-produção**. Confirmado também por screenshot. `src/components/bottom-nav.tsx`.
+### ACH-01 — Bottom nav present and functional ✅ (not a bug)
+Investigated after the observation of "missing menu on mobile". `<nav fixed
+bottom-0 z-20>`, 5 items, clickable (hit-test). The *Home* item appears covered
+by the **`NEXTJS-PORTAL`** overlay (the Next dev "N" button) — **disappears in the
+production build**. Also confirmed via screenshot. `src/components/bottom-nav.tsx`.
 
-### ACH-02 — Bottom nav sem `safe-area-inset-bottom` (P2)
-`bottom-nav.tsx:40` — `fixed bottom-0` sem `pb-[env(safe-area-inset-bottom)]`.
-Em iPhones com *home indicator* os ícones podem encostar na borda / ficar sob a
-home bar — **causa provável de "menu cortado/sumido" em aparelho real**. Fix:
-adicionar safe-area-inset à `<nav>` e ao padding-bottom do container do layout.
+### ACH-02 — Bottom nav without `safe-area-inset-bottom` (P2)
+`bottom-nav.tsx:40` — `fixed bottom-0` without `pb-[env(safe-area-inset-bottom)]`.
+On iPhones with a *home indicator* the icons may touch the edge / sit under the
+home bar — **likely cause of "clipped/missing menu" on a real device**. Fix:
+add safe-area-inset to the `<nav>` and to the layout container's padding-bottom.
 
-### ACH-05 — Alvos de toque abaixo de 44 px (P2)
-- Toggle de pagamento (Pedidos): **32×32 px**.
-- Setas mover início/fim (Fila): **28×28 px**.
-- Alça de arraste (Fila): **32 px** de largura.
-Abaixo do mínimo recomendado (44×44). Aumentar área tocável (padding/hit-area).
+### ACH-05 — Touch targets below 44 px (P2)
+- Payment toggle (Orders): **32×32 px**.
+- Move top/bottom arrows (Queue): **28×28 px**.
+- Drag handle (Queue): **32 px** wide.
+Below the recommended minimum (44×44). Increase the tappable area (padding/hit-area).
 
-### ACH-06 — `/cadastros/usuarios` não carrega: `SUPABASE_SERVICE_ROLE_KEY` vazia
-Erro de **servidor**: `Falta SUPABASE_SERVICE_ROLE_KEY` (`env.ts:22` →
-`createAdminClient` → `UsuariosPage`). A chave está **vazia** (len=0) em `.env` e
-`.env.local`. É **configuração de ambiente local** (a página usa a Admin API do
-Supabase), não bug de código — e a tela degrada com error boundary ("This page
-couldn’t load"). Em produção (Vercel) com a chave configurada, deve funcionar.
-**Ação:** preencher a service role key no ambiente local para testar Usuários.
+### ACH-06 — `/cadastros/usuarios` does not load: `SUPABASE_SERVICE_ROLE_KEY` empty
+**Server** error: `Missing SUPABASE_SERVICE_ROLE_KEY` (`env.ts:22` →
+`createAdminClient` → `UsuariosPage`). The key is **empty** (len=0) in `.env` and
+`.env.local`. This is **local environment configuration** (the page uses the
+Supabase Admin API), not a code bug — and the screen degrades with an error
+boundary ("This page couldn’t load"). In production (Vercel) with the key
+configured, it should work. **Action:** populate the service role key in the
+local environment to test Users.
 
-### ACH-03 — Auditoria fora da navegação principal (P3 / UX)
-`/auditoria` só é alcançável pelo card "Histórico de ações" no fim do Dashboard
-(não está na bottom nav nem no hub Cadastros). Acessível, mas de baixa descoberta.
+### ACH-03 — Audit outside the main navigation (P3 / UX)
+`/auditoria` is only reachable via the "Action history" card at the bottom of the
+Dashboard (it is not in the bottom nav nor in the Records hub). Accessible, but
+low discoverability.
 
-### Falso-alarme registrado — erro de env na edição de filamento
-Durante a sessão, `/cadastros/filamentos/[id]` lançou `Falta
-NEXT_PUBLIC_SUPABASE_URL` no client. **Causa: cache de build do Turbopack
-inconsistente** após religamento abrupto do dev server (o `.env.local` surgiu no
-meio). Resolvido com `rm -rf .next` + restart limpo. **Não é bug do código.**
+### False alarm logged — env error on filament edit
+During the session, `/cadastros/filamentos/[id]` threw `Missing
+NEXT_PUBLIC_SUPABASE_URL` on the client. **Cause: inconsistent Turbopack build
+cache** after an abrupt dev server restart (the `.env.local` appeared mid-way).
+Resolved with `rm -rf .next` + a clean restart. **Not a code bug.**
 
 ## Console
-Sem erros de hidratação ou warnings de React nas telas testadas. Único erro de
-runtime: o `SUPABASE_SERVICE_ROLE_KEY` vazio (ACH-06).
+No hydration errors or React warnings on the tested screens. The only runtime
+error: the empty `SUPABASE_SERVICE_ROLE_KEY` (ACH-06).
 
-## Pendências para aparelho real / DevTools
-Validação visual em 320/375 px, drag-and-drop por toque na Fila, tema escuro
-(suporte existe via next-themes + CSS variables), orientação paisagem, e teclado
-virtual não cobrindo botões de submit.
+## Pending for real device / DevTools
+Visual validation at 320/375 px, touch drag-and-drop on the Queue, dark theme
+(support exists via next-themes + CSS variables), landscape orientation, and the
+virtual keyboard not covering submit buttons.
 
-## Resumo
-Navegação e fluxos principais **funcionam bem no mobile**, sem overflow
-horizontal em nenhuma tela. **Nenhum bug bloqueante de código.** Itens a tratar:
-**ACH-02** (safe-area — prioritário, explica o "menu sumido" no aparelho),
-**ACH-05** (alvos de toque), **ACH-06** (config: service role key local),
-**ACH-03** (descoberta de Auditoria).
+## Summary
+Navigation and main flows **work well on mobile**, with no horizontal overflow on
+any screen. **No blocking code bugs.** Items to address:
+**ACH-02** (safe-area — priority, explains the "missing menu" on the device),
+**ACH-05** (touch targets), **ACH-06** (config: local service role key),
+**ACH-03** (Audit discoverability).

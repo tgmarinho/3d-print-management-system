@@ -1,73 +1,68 @@
 import Link from "next/link";
 import { Users, Boxes, Factory, LayoutDashboard, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 // Index pública: visão geral do produto + acesso ao login. Quem já está
 // autenticado é levado direto ao painel pelo CTA.
-const features = [
-  {
-    icon: Users,
-    title: "Clientes",
-    description:
-      "Cadastro simples — só o nome é obrigatório — para vincular pedidos.",
-  },
-  {
-    icon: Boxes,
-    title: "Estoque",
-    description:
-      "Filamentos por local, com saldo em estoque e a chegar, e alerta de estoque baixo.",
-  },
-  {
-    icon: Factory,
-    title: "Produção",
-    description:
-      "Pedidos com valor e pagamento, fila priorizável e status de produção.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Dashboard",
-    description:
-      "Visão de relance: estoque baixo, fila, produção e pendências.",
-  },
-];
+const featureIcons = [
+  Users,
+  Boxes,
+  Factory,
+  LayoutDashboard,
+] as const;
 
 export default async function RootPage() {
-  const supabase = await createClient();
+  const [supabase, locale] = await Promise.all([createClient(), getCurrentLocale()]);
+  const copy = t[locale].home;
+  const features = copy.features.map((feature, index) => ({
+    ...feature,
+    icon: featureIcons[index] ?? LayoutDashboard,
+  }));
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 py-10">
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between gap-3">
         <span className="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight">
           <span className="inline-block size-2.5 rounded-[3px] bg-brand" />
           3D<span className="text-muted-foreground">·</span>PRINT
         </span>
-        <Button
-          render={<Link href={user ? "/dashboard" : "/login"} />}
-          size="sm"
-        >
-          {user ? "Ir para o painel" : "Entrar"}
-          <ArrowRight />
-        </Button>
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher locale={locale} />
+          <Button
+            render={<Link href={user ? "/dashboard" : "/login"} />}
+            nativeButton={false}
+            size="sm"
+          >
+            {user ? copy.signedInCta : copy.signedOutCta}
+            <ArrowRight />
+          </Button>
+        </div>
       </header>
 
       <section className="flex flex-1 flex-col justify-center py-12">
         <p className="font-mono text-xs uppercase tracking-widest text-brand">
-          Gestão de impressão 3D
+          {copy.eyebrow}
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Clientes, estoque de filamento e produção em um só lugar.
+          {copy.heroTitle}
         </h1>
         <p className="mt-4 max-w-xl text-muted-foreground">
-          Ferramenta interna, mobile-first e em tempo real para a operação de
-          impressão 3D sob demanda — pensada para substituir a planilha.
+          {copy.heroDescription}
         </p>
         <div className="mt-6">
-          <Button render={<Link href={user ? "/dashboard" : "/login"} />}>
-            {user ? "Ir para o painel" : "Entrar no sistema"}
+          <Button
+            render={<Link href={user ? "/dashboard" : "/login"} />}
+            nativeButton={false}
+          >
+            {user ? copy.signedInCta : copy.signedOutPrimaryCta}
             <ArrowRight />
           </Button>
         </div>
